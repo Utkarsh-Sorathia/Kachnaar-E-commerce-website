@@ -15,6 +15,7 @@ const Register = () => {
     createUserWithEmailAndPassword(auth,email, password)
       .then(async(res) => {
         alert("Logged in.")
+        navigate('/');
       })
       .catch((error) => {
         console.log(error)
@@ -24,7 +25,6 @@ const Register = () => {
     // Validation
     let isValid = true;
     if (isValid) {
-      navigate('/');
     }
   };
 

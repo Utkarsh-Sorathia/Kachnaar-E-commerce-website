@@ -6,10 +6,13 @@ import { BrowserRouter, Routes,Route } from 'react-router-dom';
 import Register from './Pages/Register';
 import Sign from './Pages/Sign-in';
 import Home from './Pages/Home';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+  <Provider store={store}>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Sign />}></Route>
@@ -17,6 +20,7 @@ root.render(
         <Route path='/home' element={<Home />}></Route>
       </Routes>
     </BrowserRouter>
+  </Provider>
   </React.StrictMode>
 );
 
