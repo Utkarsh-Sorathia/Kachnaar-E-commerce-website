@@ -1,36 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import auth from '../Firebase';
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import auth from "../Firebase";
+import logo from "./google.jpg";
+import "./logo.css";
+import { db } from "../Firebase";
+import { signInWithGooglePopup } from "../Firebase";
+import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/userSlice";
 
 const Register = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const userId = uuidv4();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
-    createUserWithEmailAndPassword(auth,email, password)
-      .then(async(res) => {
-        alert("Logged in.")
-        navigate('/');
-      })
-      .catch((error) => {
-        console.log(error)
-      });
+  const Googleuser = async () => {
+   
+      const response = await signInWithGooglePopup();
+      console.log(response);
+      dispatch(loginUser(response.user.email));
+      navigate("/home")
+
+      if (response == undefined)
+      {
+        alert("Error"); 
+      }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validation
-    let isValid = true;
-    if (isValid) {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    try {
+      // Add user to Firestore
+      await db.collection("users").add({
+        id: userId,
+        username: username,
+        email: email,
+        password: password,
+      });
+
+      // Create user in Firebase authentication
+      const authResponse = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("New User Created:", authResponse);
+
+      alert("New User Created.");
+      navigate("/");
+    } catch (error) {
+      console.error("Error registering user:", error);
     }
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="container py-5 border rounded" style={{ maxWidth: '500px' }}>
+      <div
+        className="container py-5 border rounded"
+        style={{ maxWidth: "500px" }}
+      >
         <div className="row justify-content-center">
           <div className="col-md-10">
             <h2 className="text-center mb-4">Register</h2>
@@ -87,9 +126,20 @@ const Register = () => {
                   Confirm Password
                 </label>
               </div>
-              <button type="submit" className="btn btn-primary btn-lg btn-block">
+
+              <button
+                type="submit"
+                className="btn btn-primary btn-lg btn-block"
+              >
                 Register
               </button>
+              <br />
+              <img
+                className="img"
+                src={logo}
+                alt="google"
+                onClick={Googleuser}
+              />
             </form>
           </div>
         </div>

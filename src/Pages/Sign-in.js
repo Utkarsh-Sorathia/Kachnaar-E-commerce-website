@@ -1,28 +1,35 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Updated import
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../redux/authSlice';
+import { loginUser } from '../redux/userSlice';
+import auth, { signInWithGooglePopup } from '../Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth'; 
-import auth from '../Firebase';
+import logo from './google.jpg'
+import './logo.css'
 
 const Sign = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Updated hook
+  const navigate = useNavigate(); 
 
+  const Googleuser = async () => {
+    const response = await signInWithGooglePopup();
+    console.log(response);
+};
+   
   const handleSubmit = (event) => {
     event.preventDefault();
 
     signInWithEmailAndPassword(auth, email, password)
       .then((res) => {
-        alert('Logged in.');
-        dispatch(loginUser(res.user)); 
+        alert('Logged in.'); 
+        dispatch(loginUser(res.user.email));
         navigate('/home'); 
       })
       .catch((error) => {
         alert('Invalid Username or Password');
+        console.log(error);
       });
   };
 
@@ -33,7 +40,7 @@ const Sign = () => {
           <div className="row justify-content-center">
             <div className="col-md-8 col-lg-7 col-xl-6">
               <h2 className="text-center mb-4">Sign In</h2>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={(e) => handleSubmit(e)}>
                 <div className="form-outline mb-4">
                   <input
                     type="email"
@@ -55,22 +62,11 @@ const Sign = () => {
                   <label className="form-label">Password</label>
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={() => setRememberMe(!rememberMe)}
-                    />
-                    <label className="form-check-label">Remember me</label>
-                  </div>
-                  <Link to="/forgot-password">Forgot password?</Link>
-                </div>
-
                 <button type="submit" className="btn btn-primary btn-block">Sign in</button>
 
                 <Link className="btn btn-primary btn-block mx-3" to="/register">Register</Link>
+
+                <img className="img" src={logo} alt='google' onClick={Googleuser}></img>
               </form>
             </div>
           </div>
