@@ -12,13 +12,13 @@ export const userSlice = createSlice({
       state.user = action.payload;
     },
     logoutUser: (state) => {
-      state.isAuthenticated = true;
+      state.isAuthenticated = false;
       state.user = null;
     }
   }
 });
 
-export const { loginUser, logoutUser } = userSlice.actions;
+export const { loginUser, logoutUser} = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
 

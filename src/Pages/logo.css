@@ -4,3 +4,11 @@
     width: 40px;
     border: none;
 }
+
+.container{
+    background: url("./images/orange.jpg");
+}
+
+.container2{
+    background-color: aqua;
+}

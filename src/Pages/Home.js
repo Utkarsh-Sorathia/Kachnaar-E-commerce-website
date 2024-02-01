@@ -1,31 +1,16 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../redux/userSlice';
-import { useNavigate } from 'react-router-dom';  
+import React from "react";
+import "./logo.css";
+import Navbar from "./Navbar";
 
-function HomePage() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.user.user)
- 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate('/'); 
-  };
-
+const Home = () => {
   return (
     <div>
-      <h2>Home Page</h2>
-      {
-        user === null ? (
-          <>
-
-          </>
-        ) : (<button onClick={handleLogout} className='btn btn-primary btn-block'>Logout</button>)
-      }
-      
+      <Navbar />
+      <div className="text-center py-3">
+        <h1>Home Page.</h1>
+      </div>
     </div>
   );
-}
+};
 
-export default HomePage;
+export default Home;

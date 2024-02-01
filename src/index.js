@@ -4,8 +4,9 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes,Route } from 'react-router-dom';
 import Register from './Pages/Register';
-import Sign from './Pages/Sign-in';
+import Sign from './Pages/Login';
 import Home from './Pages/Home';
+import New from './Pages/New';
 import { Provider } from 'react-redux';
 import  { store,persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -20,7 +21,8 @@ root.render(
         <Route path="/" element={<Sign />}></Route>
         <Route path='/register' element={<Register/>}></Route>
         <Route path='/home' element={<Home />}></Route>
-      </Routes>
+        <Route path='/new' element={<New />}></Route>
+      </Routes> 
     </BrowserRouter>
     </PersistGate>
   </Provider>
