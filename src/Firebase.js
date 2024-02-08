@@ -15,6 +15,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
+firebase.auth().signOut().then(function() {
+}).catch(function(error) {
+  console.error('Error closing existing popup:', error);
+});
+
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
   prompt: "select_account ",

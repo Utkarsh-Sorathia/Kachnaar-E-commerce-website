@@ -49,7 +49,7 @@ const Register = () => {
         console.error("Error querying document:", error);
       });
     dispatch(loginUser(response.user.email));
-    navigate("/");
+    navigate("/login");
   };
 
   const handleSubmit = async (event) => {
@@ -69,7 +69,7 @@ const Register = () => {
             // Document doesn't exist, add the new data
             db.collection("users")
               .add({
-                userId:userId,
+                userId: userId,
                 email: email,
                 password: password,
                 name: name,
@@ -93,9 +93,8 @@ const Register = () => {
       // Create user in Firebase authentication
       try {
         await createUserWithEmailAndPassword(auth, email, password);
-        console.log("New User Created");
         alert("New User Created.");
-        navigate("/");
+        navigate("/login");
       } catch (error) {
         console.error("Error creating user:", error);
         alert("Error creating user. Please try again.");
@@ -104,110 +103,115 @@ const Register = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div
-        className="container py-5 border rounded"
-        style={{ maxWidth: "500px" }}
-      >
-        <div className="row justify-content-center">
-          <div className="col-md-10">
-            <h2 className="text-center mb-2">Register</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-outline mb-2">
-                <input
-                  type="text"
-                  id="username"
-                  className="form-control form-control-lg"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-                <label className="form-label" htmlFor="username">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="form-control form-control-lg"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-                <label className="form-label" htmlFor="username">
-                  Name
-                </label>
-              </div>
-              <div className="form-outline mb-2">
-                <input
-                  type="email"
-                  id="email"
-                  className="form-control form-control-lg"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <label className="form-label" htmlFor="email">
-                  Email address
-                </label>
-              </div>
-              <div className="form-outline mb-2">
-                <input
-                  type="password"
-                  id="password"
-                  className="form-control form-control-lg"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <label className="form-label" htmlFor="password">
-                  Password
-                </label>
-              </div>
-              <div className="form-outline mb-2">
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  className="form-control form-control-lg"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-                <label className="form-label" htmlFor="confirmPassword">
-                  Confirm Password
-                </label>
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-primary btn-lg btn-block"
-              >
-                Register
-              </button>
-              <br />
-              <div className="text-center">
-                <h5>
-                  <u>OR</u>
-                </h5>
-                <Link>
-                  <img
-                    className="img mx-3"
-                    src={logo}
-                    alt="google"
-                    onClick={Googleuser}
+    <>
+      <div className="container2 d-flex justify-content-center align-items-center p-5 vh-200">
+        <div
+          className="container py-3 text-center border rounded"
+          style={{ maxWidth: "450px" }}
+        >
+          <div className="row justify-content-center">
+            <div className="col-md-10">
+              <h2 className="text-center mb-2">Register</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="form-outline mb-2">
+                  <input
+                    type="text"
+                    id="username"
+                    className="form-control form-control-lg"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
                   />
-                </Link>
-                <Link>
-                  <img className="img mx-3" src={logo1} alt="Github" />
-                </Link>
-                <Link>
-                  <img className="img mx-3" src={logo2} alt="facebook" />
-                </Link>
-              </div>
-            </form>
+                  <label className="form-label" htmlFor="username">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="form-control form-control-lg"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                  <label className="form-label" htmlFor="username">
+                    Name
+                  </label>
+                </div>
+                <div className="form-outline mb-2">
+                  <input
+                    type="email"
+                    id="email"
+                    className="form-control form-control-lg"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <label className="form-label" htmlFor="email">
+                    Email address
+                  </label>
+                </div>
+                <div className="form-outline mb-2">
+                  <input
+                    type="password"
+                    id="password"
+                    className="form-control form-control-lg"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <label className="form-label" htmlFor="password">
+                    Password
+                  </label>
+                </div>
+                <div className="form-outline mb-2">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    className="form-control form-control-lg"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                  <label className="form-label" htmlFor="confirmPassword">
+                    Confirm Password
+                  </label>
+                </div>
+                <div className="text-center">
+                  {" "}
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-lg btn-block "
+                  >
+                    Register
+                  </button>
+                </div>
+                <Link to="/login">Already have a account?</Link>
+                <br /><br />
+                <div className="text-center">
+                  <h5>
+                    <u>OR</u>
+                  </h5>
+                  <Link>
+                    <img
+                      className="img mx-3"
+                      src={logo}
+                      alt="google"
+                      onClick={Googleuser}
+                    />
+                  </Link>
+                  <Link>
+                    <img className="img mx-3" src={logo1} alt="Github" />
+                  </Link>
+                  <Link>
+                    <img className="img mx-3" src={logo2} alt="facebook" />
+                  </Link>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

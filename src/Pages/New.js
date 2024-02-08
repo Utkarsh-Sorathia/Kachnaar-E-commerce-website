@@ -16,7 +16,7 @@ const New = () => {
             <strong>
               <h1>Login to get access to this page!</h1>
             </strong>
-            <Link to="/">
+            <Link to="/login">
               <h4>Login</h4>
             </Link>
           </p>

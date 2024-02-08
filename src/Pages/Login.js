@@ -5,11 +5,10 @@ import { loginUser } from "../redux/userSlice";
 import auth, { signInWithGooglePopup } from "../Firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db } from "../Firebase";
-import "./logo.css";
-import logo from "./images/google.jpg";
 import logo1 from "./images/github.jpg";
 import logo2 from "./images/facebook.jpg";
-import Navbar from "./Navbar";
+import "./logo.css";
+import logo from "./images/google.jpg";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,27 +19,25 @@ const Login = () => {
   const Googleuser = async () => {
     const response = await signInWithGooglePopup();
     console.log(response);
-    navigate("/home");
     const user = response.user;
-    dispatch(loginUser(user.email));
+    dispatch(loginUser(user.displayName));
     db.collection("users")
       .where("email", "==", user.email)
       .get()
       .then((snapshot) => {
         if (snapshot.empty) {
           db.collection("users")
-            .add({
-              email: user.email,
-              password: user.password,
-            })
+            .add({ email: user.email, password: user.password })
             .then((docRef) => {
               console.log("Document written with ID:", docRef.id);
+              navigate("/home");
             })
             .catch((error) => {
               console.error("Error adding document:", error);
             });
         } else {
           console.log("Duplicate data found");
+          navigate("/home");
         }
       })
       .catch((error) => {
@@ -57,7 +54,7 @@ const Login = () => {
         const user = res.user;
         const displayName = user.email;
         updateProfile(user, { displayName });
-        // alert("Login Succesful.");
+        alert("Login Succesful.");
         dispatch(loginUser(res.user.email));
         navigate("/home");
       })
@@ -69,19 +66,17 @@ const Login = () => {
 
   return (
     <>
-      <Navbar />
-      <div className="container2 text-center py-4">
-        <h1>Welcome to My Website.</h1>
+      <div className="container2 ">
         <div className="d-flex justify-content-center align-items-center vh-100">
           <div
-            className="container py-5 border rounded"
+            className="container py-3 text-center border rounded"
             style={{ maxWidth: "500px" }}
           >
             <div className="row justify-content-center">
               <div className="col-md-8 col-lg-7 col-xl-6">
-                <h2 className="text-center mb-4">Sign In</h2>
+                <h2 className="text-center mb-4">Login</h2>
                 <form onSubmit={(e) => handleSubmit(e)}>
-                  <div className="form-outline mb-4">
+                  <div className="form-outline mb-2">
                     <input
                       type="email"
                       className="form-control form-control-lg"
@@ -101,17 +96,12 @@ const Login = () => {
                     />
                     <label className="form-label">Password</label>
                   </div>
-
                   <button type="submit" className="btn btn-primary btn-block">
                     Sign in
                   </button>
-
-                  <Link
-                    className="btn btn-primary btn-block mx-3"
-                    to="/register"
-                  >
-                    Register
-                  </Link>
+                  <br />
+                  <br />
+                  <Link to="/register">Don't have a account?</Link>
                   <br />
                   <br />
                 </form>

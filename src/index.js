@@ -4,12 +4,17 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes,Route } from 'react-router-dom';
 import Register from './Pages/Register';
-import Sign from './Pages/Login';
+import Contact from './Pages/Contact';
+import About from './Pages/About';
 import Home from './Pages/Home';
 import New from './Pages/New';
 import { Provider } from 'react-redux';
 import  { store,persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import News from './Pages/News';
+import Login from './Pages/Login';
+import Welcome from './Pages/Welcome';
+import ShoppingCart from './Pages/Cart';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,10 +23,15 @@ root.render(
     <PersistGate loading={null} persistor={persistor}>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Sign />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/cart" element={<ShoppingCart />}></Route>
+        <Route path="/" element={<Welcome />}></Route>
         <Route path='/register' element={<Register/>}></Route>
         <Route path='/home' element={<Home />}></Route>
         <Route path='/new' element={<New />}></Route>
+        <Route path='/contact' element={<Contact />}></Route>
+        <Route path='/news' element={< News/>}></Route>
+        <Route path='/about' element={<About />}></Route>
       </Routes> 
     </BrowserRouter>
     </PersistGate>
