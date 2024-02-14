@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../redux/userSlice";
+import { loginAdmin, loginUser } from "../redux/userSlice";
 import auth, { signInWithGooglePopup } from "../Firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db } from "../Firebase";
@@ -13,31 +13,42 @@ import logo from "./images/google.jpg";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState("User");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const specificAdminId = "admin@gmail.com";
 
   const Googleuser = async () => {
     const response = await signInWithGooglePopup();
     console.log(response);
     const user = response.user;
     dispatch(loginUser(user.displayName));
-    db.collection("users")
+    db.collection(userType === "Admin" ? "admins" : "users")
       .where("email", "==", user.email)
       .get()
       .then((snapshot) => {
         if (snapshot.empty) {
-          db.collection("users")
-            .add({ email: user.email, password: user.password })
+          db.collection(userType === "Admin" ? "admins" : "users")
+            .add({ email: user.email })
             .then((docRef) => {
               console.log("Document written with ID:", docRef.id);
-              navigate("/home");
+              if (userType == "Admin") {
+                navigate("/admin");
+              } else {
+                navigate("/home");
+              }
             })
             .catch((error) => {
               console.error("Error adding document:", error);
             });
         } else {
           console.log("Duplicate data found");
-          navigate("/home");
+          if (userType == "Admin") {
+            navigate("/admin");
+          } else {
+            navigate("/home");
+          }
         }
       })
       .catch((error) => {
@@ -48,15 +59,52 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    db.collection(userType === "Admin" ? "admins" : "users")
+      .where("email", "==", email)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.empty) {
+          db.collection(userType === "Admin" ? "admins" : "users")
+            .add({
+              email: email,
+              password: password,
+            })
+            .then((docRef) => {
+              console.log("Document written with ID:", docRef.id);
+            })
+            .catch((error) => {
+              console.error("Error adding document:", error);
+            });
+        } else {
+          console.log("Duplicate data found");
+        }
+      })
+      .catch((error) => {
+        console.error("Error querying document:", error);
+      });
+
     signInWithEmailAndPassword(auth, email, password)
       .then((res) => {
         console.log(res);
         const user = res.user;
-        const displayName = user.email;
-        updateProfile(user, { displayName });
-        alert("Login Succesful.");
-        dispatch(loginUser(res.user.email));
-        navigate("/home");
+
+        if (userType === "Admin") {
+          if (user.email === specificAdminId) {
+            const displayName = user.email;
+            updateProfile(user, { displayName });
+            alert("Login Successful.");
+            dispatch(loginAdmin(res.user.email));
+            navigate("/admin");
+          } else {
+            alert("You are not authorized to access the admin page.");
+          }
+        } else {
+          const displayName = user.email;
+          updateProfile(user, { displayName });
+          alert("Login Successful.");
+          dispatch(loginUser(res.user.email));
+          navigate("/home");
+        }
       })
       .catch((error) => {
         alert("Invalid Username or Password");
@@ -104,6 +152,16 @@ const Login = () => {
                   <Link to="/register">Don't have a account?</Link>
                   <br />
                   <br />
+                  <p>
+                    Login as:
+                    <select
+                      value={userType}
+                      onChange={(e) => setUserType(e.target.value)}
+                    >
+                      <option value="User">User</option>
+                      <option value="Admin">Admin</option>
+                    </select>
+                  </p>
                 </form>
                 <div className="text-center">
                   <h5>

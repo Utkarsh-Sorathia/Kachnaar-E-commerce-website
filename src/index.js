@@ -15,6 +15,10 @@ import News from './Pages/News';
 import Login from './Pages/Login';
 import Welcome from './Pages/Welcome';
 import ShoppingCart from './Pages/Cart';
+import AddProduct from './Pages/AddProduct';
+import AdminHome from './Pages/AdminHome';
+import ManageUser from './Pages/ManageUser';
+import Dashboard from './Pages/Dashboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -24,11 +28,15 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="/add" element={<AddProduct />}></Route>
         <Route path="/cart" element={<ShoppingCart />}></Route>
         <Route path="/" element={<Welcome />}></Route>
         <Route path='/register' element={<Register/>}></Route>
         <Route path='/home' element={<Home />}></Route>
-        <Route path='/new' element={<New />}></Route>
+        <Route path='/admin' element={<Dashboard />}></Route>
+        <Route path='/admin/add' element={<New />}></Route>
+        <Route path='/admin/home' element={<AdminHome />}></Route>
+        <Route path='/admin/manage' element={<ManageUser />}></Route>
         <Route path='/contact' element={<Contact />}></Route>
         <Route path='/news' element={< News/>}></Route>
         <Route path='/about' element={<About />}></Route>

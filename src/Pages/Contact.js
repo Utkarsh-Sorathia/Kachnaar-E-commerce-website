@@ -1,10 +1,8 @@
 import React from "react";
 import "./logo.css";
-import { useSelector } from "react-redux";
 import Navbar from "./Navbar";
 
 const New = () => {
-  const isAuthenticated = useSelector((state) => state.isAuthenticated);
   return (
     <div>
       <Navbar />
