@@ -1,31 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Navbar from './Navbar';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../redux/userSlice';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Navbar from "./Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../redux/userSlice";
+import { v4 as uuidv4 } from "uuid";
+import firebase from "firebase/compat/app";
 
 const Home = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
   const [ebayProducts, setEbayProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [firestoreProducts, setFirestoreProducts] = useState([]);
+  const db = firebase.firestore();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const options = {
-        method: 'GET',
-        url: 'https://ebay-scrapper.p.rapidapi.com/search',
+        method: "GET",
+        url: "https://ebay-scrapper.p.rapidapi.com/search",
         params: {
-          url: `https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313&_nkw=${searchQuery}&_sacat=0`
+          url: `https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313&_nkw=${searchQuery}&_sacat=0`,
         },
         headers: {
-          'X-RapidAPI-Key': '66a968c634mshd8a56e57dbced34p144e25jsn637f5e7ff3af',
-          'X-RapidAPI-Host': 'ebay-scrapper.p.rapidapi.com'
-        }
+          "X-RapidAPI-Key":
+            "66a968c634mshd8a56e57dbced34p144e25jsn637f5e7ff3af",
+          "X-RapidAPI-Host": "ebay-scrapper.p.rapidapi.com",
+        },
       };
 
       try {
@@ -38,10 +42,24 @@ const Home = () => {
       }
     };
 
-    if (searchQuery.trim() !== '') {
+    if (searchQuery.trim() !== "") {
       fetchData();
     }
   }, [searchQuery]);
+
+  useEffect(() => {
+    const fetchFirestoreData = async () => {
+      try {
+        const snapshot = await db.collection("productDataset").get();
+        const data = snapshot.docs.map((doc) => doc.data());
+        setFirestoreProducts(data);
+      } catch (error) {
+        console.error("Error fetching Firestore data:", error);
+      }
+    };
+
+    fetchFirestoreData();
+  }, [db]);
 
   const handleAddToCart = (product) => {
     const cid = uuidv4();
@@ -85,6 +103,30 @@ const Home = () => {
                 <div className="card-body">
                   <h5 className="card-title">{product.name}</h5>
                   <p className="card-text">${product.price}</p>
+                  <p className="card-text">{product.description}</p>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          {/* Firestore products rendering */}
+          {firestoreProducts.map((product, index) => (
+            <div className="col-md-4 mb-4" key={index}>
+              <div className="card">
+                <img
+                  src={product.image}
+                  className="card-img-top"
+                  alt={product.name}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{product.name}</h5>
+                  <p className="card-text">${product.price}</p>
+                  <p className="card-text">{product.description}</p>
                   <button
                     className="btn btn-primary"
                     onClick={() => handleAddToCart(product)}
@@ -113,7 +155,9 @@ const Home = () => {
                   />
                   <div className="card-body">
                     <p className="card-title">{product.name}</p>
-                    <p className="card-text">${product.price} {product.currency}</p>
+                    <p className="card-text">
+                      ${product.price} {product.currency}
+                    </p>
                     <button
                       className="btn btn-primary"
                       onClick={() => handleAddToCart(product)}

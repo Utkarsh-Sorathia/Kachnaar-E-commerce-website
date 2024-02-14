@@ -2,28 +2,41 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { editProduct, removeProduct } from "../redux/userSlice";
+import firebase from "firebase/compat/app";
 
 function AddProduct({ onAddProduct }) {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const [editingProductId, setEditingProductId] = useState(null); 
+  const [productDescription, setProductDescription] = useState("");
+  const [editingProductId, setEditingProductId] = useState(null);
   const admin = useSelector((state) => state.admin);
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
+  const db = firebase.firestore();
 
   const handleAddProduct = (e) => {
-
     e.preventDefault();
 
-    if (!productName || !productPrice) return;
+    if (!productName || !productPrice || !productDescription) return;
     const product = {
       id: uuidv4(),
       name: productName,
       price: parseFloat(productPrice),
+      description: productDescription,
     };
     onAddProduct(product);
+    db.collection("productDataset")
+      .doc(product.id)
+      .set(product)
+      .then(() => {
+        console.log("Product added to Firestore:", product);
+      })
+      .catch((error) => {
+        console.error("Error adding product to Firestore: ", error);
+      });
     setProductName("");
     setProductPrice("");
+    setProductDescription("");
   };
 
   const handleRemoveProduct = (productId) => {
@@ -37,24 +50,39 @@ function AddProduct({ onAddProduct }) {
       setEditingProductId(productId);
       setProductName(productToEdit.name);
       setProductPrice(productToEdit.price);
+      setProductDescription(productToEdit.description);
     }
   };
 
   const handleSaveEditProduct = (e) => {
-
     e.preventDefault();
-    
-    if (!productName || !productPrice) return;
+
+    if (!productName || !productPrice || !productDescription) return;
     dispatch(
       editProduct({
-        id: editingProductId, 
+        id: editingProductId,
         name: productName,
         price: parseFloat(productPrice),
+        description: productDescription,
       })
     );
-    setEditingProductId(null); 
+    db.collection("productDataset")
+      .doc(editingProductId)
+      .update({
+        name: productName,
+        price: parseFloat(productPrice),
+        description: productDescription,
+      })
+      .then(() => {
+        console.log("Product updated in Firestore:", editingProductId);
+      })
+      .catch((error) => {
+        console.error("Error updating product in Firestore: ", error);
+      });
+    setEditingProductId(null);
     setProductName("");
     setProductPrice("");
+    setProductDescription("");
   };
 
   return (
@@ -62,48 +90,44 @@ function AddProduct({ onAddProduct }) {
       {admin ? (
         <>
           <form>
-            <div className="container">
+            <div className="border p-2 container">
               <div className="row">
                 <div className="col-md-6 offset-md-3 p-3">
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Product Name"
-                      value={productName}
-                      onChange={(e) => setProductName(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Product Price"
-                      value={productPrice}
-                      onChange={(e) => setProductPrice(e.target.value)}
-                      required
-                    />
-                  </div>
-                  {editingProductId ? ( 
-                    <div className="d-flex justify-content-center">
-                      <button
-                        className="btn btn-success mx-2"
-                        onClick={handleSaveEditProduct}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  ) : ( 
-                    <div className="d-flex justify-content-center">
-                      <button
-                        className="btn btn-success mx-2"
-                        onClick={handleAddProduct}
-                      >
-                        Add Product
-                      </button>
-                    </div>
-                  )}
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    placeholder="Product Name"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    required
+                  />
+                  <input
+                    type="number"
+                    className="form-control mb-3"
+                    placeholder="Product Price"
+                    value={productPrice}
+                    onChange={(e) => setProductPrice(e.target.value)}
+                    required
+                  />
+                  <textarea
+                    className="form-control mb-3"
+                    placeholder="Product Description"
+                    value={productDescription}
+                    onChange={(e) => setProductDescription(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="btn btn-success mx-2"
+                    onClick={
+                      editingProductId
+                        ? handleSaveEditProduct
+                        : handleAddProduct
+                    }
+                  >
+                    {editingProductId ? "Save" : "Add Product"}
+                  </button>
                 </div>
               </div>
             </div>
@@ -120,8 +144,8 @@ function AddProduct({ onAddProduct }) {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product, index) => (
-                  <tr key={index}>
+                {products.map((product) => (
+                  <tr key={product.id}>
                     <td>{product.name}</td>
                     <td>${product.price}</td>
                     <td>

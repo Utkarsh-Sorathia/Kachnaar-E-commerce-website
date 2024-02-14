@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAdmin, logoutUser } from "../redux/userSlice";
 import { Link, useNavigate } from "react-router-dom";
@@ -83,11 +82,11 @@ const AdminNavbar = ({ handleLogout, admin }) => (
         height="45"
         width="45"
       ></img>
+      <Link className="navbar-brand text-light mx-3" to="/admin">
+        Dashboard
+      </Link>
       <Link className="navbar-brand text-light mx-3" to="/admin/add">
         Add Product
-      </Link>
-      <Link className="navbar-brand text-light mx-3" to="/admin/home">
-        Admin Home
       </Link>
       <Link className="navbar-brand text-light mx-3" to="/admin/manage">
         Manage Users
