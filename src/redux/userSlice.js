@@ -39,7 +39,7 @@ export const userSlice = createSlice({
       state.totalItems = quantity;
     },
     removeFromCart: (state, action) => {
-      const { cid, quantityToRemove } = action.payload;
+      const { cid, quantityToRemove, totalItems } = action.payload;
       const updatedCart = state.cart.map((item) => {
         if (item.cid === cid) {
           return {
@@ -49,9 +49,13 @@ export const userSlice = createSlice({
         }
         return item;
       });
-
       state.cart = updatedCart.filter((item) => item.quantity > 0);
       state.totalItems -= quantityToRemove;
+      if (state.totalItems < 0) {
+        state.totalItems = 0;
+      } else {
+        state.totalItems = state.totalItems;
+      }
     },
 
     removeProduct: (state, action) => {
