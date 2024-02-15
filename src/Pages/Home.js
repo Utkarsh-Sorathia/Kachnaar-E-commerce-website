@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/userSlice";
 import { v4 as uuidv4 } from "uuid";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import firebase from "firebase/compat/app";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products);
   const [ebayProducts, setEbayProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
   const [firestoreProducts, setFirestoreProducts] = useState([]);
   const db = firebase.firestore();
+  const notifyToCart = () =>
+    toast.success("Added to Cart.", {
+      position: "top-center",
+      autoClose: 1500,
+    });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,10 +68,11 @@ const Home = () => {
     fetchFirestoreData();
   }, [db]);
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, quantity) => {
     const cid = uuidv4();
-    const newObj = { ...product, cid };
+    const newObj = { ...product, cid, quantity: parseInt(quantity, 10) };
     dispatch(addToCart(newObj));
+    notifyToCart();
   };
 
   const handleInputChange = (event) => {
@@ -74,6 +82,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <div className="container mt-5">
         <div className="row">
           <div className="col">
@@ -92,28 +101,6 @@ const Home = () => {
           </div>
         </div>
         <div className="row justify-content-center">
-          {products.map((product, index) => (
-            <div className="col-md-4 mb-4" key={index}>
-              <div className="card">
-                <img
-                  src={product.image}
-                  className="card-img-top"
-                  alt={product.title}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">${product.price}</p>
-                  <p className="card-text">{product.description}</p>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
           {/* Firestore products rendering */}
           {firestoreProducts.map((product, index) => (
             <div className="col-md-4 mb-4" key={index}>
@@ -127,9 +114,17 @@ const Home = () => {
                   <h5 className="card-title">{product.name}</h5>
                   <p className="card-text">${product.price}</p>
                   <p className="card-text">{product.description}</p>
+                  <p className="card-text">
+                    <input
+                      type="number"
+                      placeholder="quantity"
+                      min={1}
+                      onChange={(e) => setQuantity(e.target.value)}
+                    />
+                  </p>
                   <button
                     className="btn btn-primary"
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => handleAddToCart(product, quantity)}
                   >
                     Add to Cart
                   </button>

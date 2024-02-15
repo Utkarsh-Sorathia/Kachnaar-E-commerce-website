@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginAdmin, loginUser } from "../redux/userSlice";
@@ -9,6 +9,8 @@ import logo1 from "./images/github.jpg";
 import logo2 from "./images/facebook.jpg";
 import "./logo.css";
 import logo from "./images/google.jpg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +18,8 @@ const Login = () => {
   const [userType, setUserType] = useState("User");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const notify = () => toast.success("Logged In Successfully");
+  const [toastClosed, setToastClosed] = useState(true);
 
   const specificAdminId = "admin@gmail.com";
 
@@ -34,9 +38,9 @@ const Login = () => {
             .then((docRef) => {
               console.log("Document written with ID:", docRef.id);
               if (userType == "Admin") {
-                navigate("/admin");
+                navigateAfterToast("/admin");
               } else {
-                navigate("/home");
+                navigateAfterToast("/home");
               }
             })
             .catch((error) => {
@@ -45,15 +49,23 @@ const Login = () => {
         } else {
           console.log("Duplicate data found");
           if (userType == "Admin") {
-            navigate("/admin");
+            navigateAfterToast("/admin");
           } else {
-            navigate("/home");
+            navigateAfterToast("/home");
           }
         }
       })
       .catch((error) => {
         console.error("Error querying document:", error);
       });
+  };
+
+  const navigateAfterToast = (path) => {
+    setToastClosed(false);
+    setTimeout(() => {
+      navigate(path);
+      setToastClosed(true);
+    }, 2000);
   };
 
   const handleSubmit = (event) => {
@@ -92,18 +104,16 @@ const Login = () => {
           if (user.email === specificAdminId) {
             const displayName = user.email;
             updateProfile(user, { displayName });
-            alert("Login Successful.");
             dispatch(loginAdmin(res.user.email));
-            navigate("/admin");
+            navigateAfterToast("/admin");
           } else {
             alert("You are not authorized to access the admin page.");
           }
         } else {
           const displayName = user.email;
           updateProfile(user, { displayName });
-          alert("Login Successful.");
           dispatch(loginUser(res.user.email));
-          navigate("/home");
+          navigateAfterToast("/home");
         }
       })
       .catch((error) => {
@@ -111,6 +121,14 @@ const Login = () => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    if (!toastClosed) {
+      setTimeout(() => {
+        setToastClosed(true);
+      }, 2000); 
+    }
+  }, [toastClosed]);
 
   return (
     <>
@@ -144,9 +162,14 @@ const Login = () => {
                     />
                     <label className="form-label">Password</label>
                   </div>
-                  <button type="submit" className="btn btn-primary btn-block">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-block"
+                    onClick={notify}
+                  >
                     Sign in
                   </button>
+                  <ToastContainer position="top-right" autoClose={2000} />
                   <br />
                   <br />
                   <Link to="/register">Don't have a account?</Link>

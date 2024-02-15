@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../redux/userSlice";
 import Navbar from "./Navbar";
@@ -6,17 +6,19 @@ import Navbar from "./Navbar";
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState("");
 
-  const handleRemoveFromCart = (productId) => {
-    dispatch(removeFromCart({ cid: productId }));
+  const handleRemoveFromCart = (productId, quantityToRemove) => {
+    dispatch(removeFromCart({ cid: productId, quantityToRemove: parseInt(quantityToRemove, 10) }));
   };
+  
 
   return (
     <>
       <Navbar />
       <div className="container mt-5">
         <div className="cart-container">
-          <h2 className="mb-4">Shopping Cart</h2>
+          <h2 className="mb-4">My Cart</h2>
           <ul className="list-group">
             {cart && cart.length > 0 ? (
               cart.map((product, index) => (
@@ -25,8 +27,9 @@ const Cart = () => {
                     {
                       product.name?(<>{product.name}</>):(<>{product.title}</>)
                     } 
-                    - ${product.price}</span>
-                  <button className="btn btn-danger" onClick={() => handleRemoveFromCart(product.cid)}>
+                    - ${(product.price) * (product.quantity)} - {product.quantity}</span>
+                    <input type="number" placeholder="Quantity" onChange={(e) => setQuantity(e.target.value)} />
+                  <button className="btn btn-danger" onClick={() => handleRemoveFromCart(product.cid ,quantity)}>
                     Remove
                   </button>
                 </li>

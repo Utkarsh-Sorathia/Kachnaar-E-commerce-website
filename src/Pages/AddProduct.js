@@ -42,6 +42,16 @@ function AddProduct({ onAddProduct }) {
   const handleRemoveProduct = (productId) => {
     dispatch(removeProduct({ id: productId }));
     console.log("Removing product with ID:", productId);
+    // Remove product from Firestore
+    db.collection("productDataset")
+      .doc(productId)
+      .delete()
+      .then(() => {
+        console.log("Product removed from Firestore:", productId);
+      })
+      .catch((error) => {
+        console.error("Error removing product from Firestore: ", error);
+      });
   };
 
   const handleEditProduct = (productId) => {

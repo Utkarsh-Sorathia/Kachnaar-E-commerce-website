@@ -18,6 +18,7 @@ export const userSlice = createSlice({
     logoutUser: (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      state.totalItems = 0;
     },
     loginAdmin: (state, action) => {
       state.isAuthenticated = true;
@@ -28,13 +29,31 @@ export const userSlice = createSlice({
       state.admin = null;
     },
     addToCart: (state, action) => {
-      state.cart.push(action.payload);
-      state.totalItems++;
+      const { id, quantity } = action.payload;
+      const existingItemIndex = state.cart.findIndex((item) => item.id === id);
+      if (existingItemIndex !== -1) {
+        state.cart[existingItemIndex].quantity += quantity;
+      } else {
+        state.cart.push({ ...action.payload, quantity: quantity });
+      }
+      state.totalItems = quantity;
     },
     removeFromCart: (state, action) => {
-      state.cart = state.cart.filter((item) => item.cid !== action.payload.cid);
-      state.totalItems--;
+      const { cid, quantityToRemove } = action.payload;
+      const updatedCart = state.cart.map((item) => {
+        if (item.cid === cid) {
+          return {
+            ...item,
+            quantity: item.quantity - quantityToRemove,
+          };
+        }
+        return item;
+      });
+
+      state.cart = updatedCart.filter((item) => item.quantity > 0);
+      state.totalItems -= quantityToRemove;
     },
+
     removeProduct: (state, action) => {
       state.products = state.products.filter(
         (item) => item.id !== action.payload.id
@@ -44,14 +63,14 @@ export const userSlice = createSlice({
       state.products.push(action.payload);
     },
     editProduct: (state, action) => {
-      const { id, name, price } = action.payload;
+      const { id, name, price, description } = action.payload;
       const index = state.products.findIndex((product) => product.id === id);
       if (index !== -1) {
         state.products[index].name = name;
         state.products[index].price = price;
+        state.products[index].description = description;
       }
-    }
-    
+    },
   },
 });
 

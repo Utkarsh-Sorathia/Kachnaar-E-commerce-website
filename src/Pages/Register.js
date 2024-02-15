@@ -31,7 +31,6 @@ const Register = () => {
       .get()
       .then((snapshot) => {
         if (snapshot.empty) {
-          // Document doesn't exist, add the new data
           db.collection("users")
             .add({ email: user.email })
             .then((docRef) => {
@@ -41,7 +40,6 @@ const Register = () => {
               console.error("Error adding document:", error);
             });
         } else {
-          // Document with the specified field value already exists
           console.log("Duplicate data found");
         }
       })
@@ -66,7 +64,6 @@ const Register = () => {
         .get()
         .then((snapshot) => {
           if (snapshot.empty) {
-            // Document doesn't exist, add the new data
             db.collection("users")
               .add({
                 userId: userId,
@@ -82,7 +79,6 @@ const Register = () => {
                 console.error("Error adding document:", error);
               });
           } else {
-            // Document with the specified field value already exists
             console.log("Duplicate data found");
           }
         })
@@ -90,7 +86,6 @@ const Register = () => {
           console.error("Error querying document:", error);
         });
 
-      // Create user in Firebase authentication
       try {
         await createUserWithEmailAndPassword(auth, email, password);
         alert("New User Created.");
