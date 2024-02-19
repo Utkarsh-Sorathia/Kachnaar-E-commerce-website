@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { editProduct, removeProduct } from "../redux/userSlice";
 import firebase from "firebase/compat/app";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AddProduct({ onAddProduct }) {
   const [productName, setProductName] = useState("");
@@ -12,12 +14,16 @@ function AddProduct({ onAddProduct }) {
   const admin = useSelector((state) => state.admin);
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
+  const notify = () => toast.warning("Please Fill all the details.");
   const db = firebase.firestore();
 
   const handleAddProduct = (e) => {
     e.preventDefault();
 
-    if (!productName || !productPrice || !productDescription) return;
+    if (!productName || !productPrice || !productDescription) {
+      notify();
+      return;
+    }
     const product = {
       id: uuidv4(),
       name: productName,
@@ -67,7 +73,10 @@ function AddProduct({ onAddProduct }) {
   const handleSaveEditProduct = (e) => {
     e.preventDefault();
 
-    if (!productName || !productPrice || !productDescription) return;
+    if (!productName || !productPrice || !productDescription) {
+      notify();
+      return;
+    }
     dispatch(
       editProduct({
         id: editingProductId,
@@ -97,9 +106,10 @@ function AddProduct({ onAddProduct }) {
 
   return (
     <>
+      <ToastContainer />
       {admin ? (
         <>
-          <form>
+          <form className="form">
             <div className="border p-2 container">
               <div className="row">
                 <div className="col-md-6 offset-md-3 p-3">
@@ -129,6 +139,7 @@ function AddProduct({ onAddProduct }) {
                 </div>
                 <div className="d-flex justify-content-center">
                   <button
+                    type="submit"
                     className="btn btn-success mx-2"
                     onClick={
                       editingProductId

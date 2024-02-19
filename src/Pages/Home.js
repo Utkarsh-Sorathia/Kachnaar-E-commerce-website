@@ -13,7 +13,7 @@ const Home = () => {
   const [ebayProducts, setEbayProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState("1");
   const [loading, setLoading] = useState(false);
   const [firestoreProducts, setFirestoreProducts] = useState([]);
   const db = firebase.firestore();
@@ -119,6 +119,7 @@ const Home = () => {
                       type="number"
                       placeholder="quantity"
                       min={1}
+                      defaultValue={1}
                       onChange={(e) => setQuantity(e.target.value)}
                     />
                   </p>

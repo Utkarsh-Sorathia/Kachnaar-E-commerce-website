@@ -4,10 +4,12 @@ import "./logo.css";
 
 const Dashboard = () => {
   return (
-    <div>
-      <Navbar />
+    <>
+    <Navbar />
+    <div className="d-flex justify-content-center">
       <h1>Dashboard</h1>
     </div>
+    </>
   );
 };
 

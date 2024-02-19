@@ -32,7 +32,7 @@ export const userSlice = createSlice({
       const { id, quantity } = action.payload;
       const existingItemIndex = state.cart.findIndex((item) => item.id === id);
       if (existingItemIndex !== -1) {
-        state.cart[existingItemIndex].quantity += quantity;
+        state.cart[existingItemIndex].quantity =+ quantity;
       } else {
         state.cart.push({ ...action.payload, quantity: quantity });
       }
