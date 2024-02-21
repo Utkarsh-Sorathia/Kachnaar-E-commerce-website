@@ -1,6 +1,4 @@
 import React from "react";
-import orange from "./images/orange.jpg";
-import main from "./images/main.jpg";
 import Navbar from "./Navbar";
 import "./logo.css";
 
@@ -9,63 +7,156 @@ const Welcome = () => {
     <div>
       <Navbar />
       <div
-        id="carouselExampleIndicators"
+        id="carouselExampleSlidesOnly"
         className="carousel slide"
-        data-ride="carousel"
+        data-bs-ride="carousel"
       >
-        <ol class="carousel-indicators">
-          <li
-            data-target="#carouselExampleIndicators"
-            data-slide-to="0"
-            class="active"
-          ></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img
-              class="d-block w-100"
-              src={orange}
-              alt="First slide"
-              height="300"
-            />
+        <div className="carousel-inner">
+          <div className="carousel-item active">
+            <div
+              className="container-fluid"
+              style={{ backgroundColor: "beige" }}
+            >
+              <div
+                className="row align-items-center"
+                style={{ height: "50vh" }}
+              >
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/07/09/06/bridge-7504605__340.jpg"
+                    className="d-block w-100"
+                    alt="..."
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/15/21/23/cat-7523894__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2021/03/04/11/37/coast-6067736__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/15/06/45/danube-river-7522608__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="carousel-item">
-            <img
-              class="d-block w-100"
-              src={main}
-              alt="Second slide"
-              height="300"
-            />
+          <div className="carousel-item" style={{ height: "50vh" }}>
+            <div
+              className="container-fluid"
+              style={{ backgroundColor: "beige" }}
+            >
+              <div
+                className="row align-items-center"
+                style={{ height: "50vh" }}
+              >
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/07/09/06/bridge-7504605__340.jpg"
+                    className="d-block w-100"
+                    alt="..."
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/15/21/23/cat-7523894__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2021/03/04/11/37/coast-6067736__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/15/06/45/danube-river-7522608__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="carousel-item">
-            <img
-              class="d-block w-100"
-              src="..."
-              alt="Third slide"
-              height="300"
-            />
+          <div className="carousel-item" style={{ height: "50vh" }}>
+            <div
+              className="container-fluid"
+              style={{ backgroundColor: "beige" }}
+            >
+              <div
+                className="row align-items-center"
+                style={{ height: "50vh" }}
+              >
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/07/09/06/bridge-7504605__340.jpg"
+                    className="d-block w-100"
+                    alt="..."
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/15/21/23/cat-7523894__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2021/03/04/11/37/coast-6067736__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+                <div className="col-sm-3">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2022/10/15/06/45/danube-river-7522608__340.jpg"
+                    className="d-block w-100"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <a
-          class="carousel-control-prev"
-          href="#carouselExampleIndicators"
-          role="button"
-          data-slide="prev"
+        <button
+          className="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleSlidesOnly"
+          data-bs-slide="prev"
         >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a
-          class="carousel-control-next"
-          href="#carouselExampleIndicators"
-          role="button"
-          data-slide="next"
+          <span
+            className="carousel-control-prev-icon"
+            aria-hidden="true"
+          ></span>
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button
+          className="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleSlidesOnly"
+          data-bs-slide="next"
         >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
+          <span
+            className="carousel-control-next-icon"
+            aria-hidden="true"
+          ></span>
+          <span className="visually-hidden">Next</span>
+        </button>
       </div>
     </div>
   );

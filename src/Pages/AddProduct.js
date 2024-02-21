@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { editProduct, removeProduct } from "../redux/userSlice";
 import firebase from "firebase/compat/app";
+import "firebase/compat/storage";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,25 +11,36 @@ function AddProduct({ onAddProduct }) {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
+  const [stock, setStock] = useState(0);
   const [editingProductId, setEditingProductId] = useState(null);
+  const [productImage, setProductImage] = useState(null);
   const admin = useSelector((state) => state.admin);
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const notify = () => toast.warning("Please Fill all the details.");
+  const notifyAdd = () => toast.success("New Product Added.");
   const db = firebase.firestore();
+  const storage = firebase.storage();
 
-  const handleAddProduct = (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault();
 
     if (!productName || !productPrice || !productDescription) {
       notify();
       return;
     }
+
+    const imageRef = storage.ref().child(`product_images/${uuidv4()}`);
+    await imageRef.put(productImage);
+    const imageUrl = await imageRef.getDownloadURL();
+
     const product = {
       id: uuidv4(),
       name: productName,
       price: parseFloat(productPrice),
       description: productDescription,
+      imageUrl: imageUrl,
+      stock: stock,
     };
     onAddProduct(product);
     db.collection("productDataset")
@@ -36,6 +48,7 @@ function AddProduct({ onAddProduct }) {
       .set(product)
       .then(() => {
         console.log("Product added to Firestore:", product);
+        notifyAdd();
       })
       .catch((error) => {
         console.error("Error adding product to Firestore: ", error);
@@ -43,6 +56,13 @@ function AddProduct({ onAddProduct }) {
     setProductName("");
     setProductPrice("");
     setProductDescription("");
+    setProductImage(null);
+    setStock(0);
+  };
+
+  const handleImageChange = (e) => {
+    const imageFile = e.target.files[0];
+    setProductImage(imageFile);
   };
 
   const handleRemoveProduct = (productId) => {
@@ -67,6 +87,8 @@ function AddProduct({ onAddProduct }) {
       setProductName(productToEdit.name);
       setProductPrice(productToEdit.price);
       setProductDescription(productToEdit.description);
+      setProductImage(productToEdit.imageUrl);
+      setStock(productToEdit.stock);
     }
   };
 
@@ -83,6 +105,8 @@ function AddProduct({ onAddProduct }) {
         name: productName,
         price: parseFloat(productPrice),
         description: productDescription,
+        imageUrl: productImage,
+        stock: parseInt(stock),
       })
     );
     db.collection("productDataset")
@@ -91,6 +115,7 @@ function AddProduct({ onAddProduct }) {
         name: productName,
         price: parseFloat(productPrice),
         description: productDescription,
+        stock: parseInt(stock),
       })
       .then(() => {
         console.log("Product updated in Firestore:", editingProductId);
@@ -102,6 +127,7 @@ function AddProduct({ onAddProduct }) {
     setProductName("");
     setProductPrice("");
     setProductDescription("");
+    setStock(0);
   };
 
   return (
@@ -136,6 +162,20 @@ function AddProduct({ onAddProduct }) {
                     onChange={(e) => setProductDescription(e.target.value)}
                     required
                   />
+                  <input
+                    type="file"
+                    accept=".jpg,.png"
+                    onChange={handleImageChange}
+                    className="form-control mb-3"
+                    required
+                  />
+                  <input
+                    type="number"
+                    className="form-control mb-3"
+                    placeholder="Stock"
+                    value={stock}
+                    onChange={(e) => setStock(e.target.value)}
+                  />
                 </div>
                 <div className="d-flex justify-content-center">
                   <button
@@ -155,12 +195,13 @@ function AddProduct({ onAddProduct }) {
           </form>
           <br />
           <br />
-          <div>
+          <div className="table-responsive">
             <table className="table table-bordered">
               <thead className="thead-dark">
                 <tr>
                   <th className="text-center">Name</th>
                   <th className="text-center">Price</th>
+                  <th className="text-center">Stock</th>
                   <th className="text-center">Actions</th>
                 </tr>
               </thead>
@@ -168,7 +209,8 @@ function AddProduct({ onAddProduct }) {
                 {products.map((product) => (
                   <tr key={product.id}>
                     <td>{product.name}</td>
-                    <td>${product.price}</td>
+                    <td>₹{product.price}</td>
+                    <td>{product.stock}</td>
                     <td>
                       <button
                         className="btn btn-primary mx-2"

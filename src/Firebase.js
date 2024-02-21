@@ -1,6 +1,7 @@
 import "firebase/compat/auth";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore"
+import "firebase/compat/storage";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
@@ -27,4 +28,5 @@ provider.setCustomParameters({
 
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export const db = firebase.firestore()
+export const storage = firebase.storage();
 export default auth;

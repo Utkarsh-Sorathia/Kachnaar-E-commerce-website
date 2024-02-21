@@ -165,7 +165,7 @@ const Login = () => {
                   <button
                     type="submit"
                     className="btn btn-primary btn-block"
-                    onClick={notify}
+                    onClick= {notify}
                   >
                     Sign in
                   </button>

@@ -32,31 +32,33 @@ export const userSlice = createSlice({
       const { id, quantity } = action.payload;
       const existingItemIndex = state.cart.findIndex((item) => item.id === id);
       if (existingItemIndex !== -1) {
-        state.cart[existingItemIndex].quantity =+ quantity;
+        state.cart[existingItemIndex].quantity += quantity;
       } else {
         state.cart.push({ ...action.payload, quantity: quantity });
       }
-      state.totalItems = quantity;
+      var temp = state.totalItems;
+      temp = temp + quantity;
+      state.totalItems = temp;
+      // state.totalItems = state.totalItems+ quantity;
     },
     removeFromCart: (state, action) => {
-      const { cid, quantityToRemove, totalItems } = action.payload;
+      const { cid, quantityToRemove } = action.payload;
       const updatedCart = state.cart.map((item) => {
         if (item.cid === cid) {
+          const newQuantity = item.quantity - quantityToRemove;
           return {
             ...item,
-            quantity: item.quantity - quantityToRemove,
+            quantity: newQuantity >= 0 ? newQuantity : 0,
           };
         }
         return item;
       });
       state.cart = updatedCart.filter((item) => item.quantity > 0);
-      state.totalItems -= quantityToRemove;
-      if (state.totalItems < 0) {
-        state.totalItems = 0;
-      } else {
-        state.totalItems = state.totalItems;
-      }
+    
+      // Recalculate totalItems based on the quantities of items in the updated cart
+      state.totalItems = state.cart.reduce((total, item) => total + item.quantity, 0);
     },
+    
 
     removeProduct: (state, action) => {
       state.products = state.products.filter(

@@ -25,10 +25,12 @@ const UserNavbar = ({ handleLogout, user, cartItems }) => (
         About Us
       </Link>
     </div>
+    <div className="navbar-brand text-light mx-3">
+    </div>
     <div className="mx-3 dropdown text-end">
       <Link className="navbar-brand mx-4" to="/cart">
-        <img src={Cart} alt="cart" height="30" width="35"></img>
-        <span class="position-absolute top-2 start-95 translate-middle badge rounded-pill bg-light text-dark ">
+        <img src={Cart} alt="cart" height="30" width="35" />
+        <span class="h-75 position-absolute top-2 start-95 translate-middle badge rounded-pill bg-light text-dark">
           {cartItems}
           <span class="visually-hidden">unread messages</span>
         </span>
@@ -54,7 +56,9 @@ const UserNavbar = ({ handleLogout, user, cartItems }) => (
       >
         <li>
           {user ? (
-            <p className="dropdown-item">Hi, {user}!</p>
+            <Link to="/profile">
+              <p className="dropdown-item">Hi, {user}!</p>
+            </Link>
           ) : (
             <p className="dropdown-item">Hi, admin!</p>
           )}
@@ -87,9 +91,6 @@ const AdminNavbar = ({ handleLogout, admin }) => (
       </Link>
       <Link className="navbar-brand text-light mx-3" to="/admin/add">
         Add Product
-      </Link>
-      <Link className="navbar-brand text-light mx-3" to="/admin/manage">
-        Manage Users
       </Link>
     </div>
     <div className="mx-3 dropdown text-end">

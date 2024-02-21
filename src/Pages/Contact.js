@@ -1,16 +1,38 @@
 import React from "react";
-import "./logo.css";
+import Image from "./images/facebook.jpg";
+import Image1 from "./images/github.jpg";
+import { Carousel, Card } from "react-bootstrap";
 import Navbar from "./Navbar";
 
-const New = () => {
+const CarouselCard = () => {
   return (
-    <div>
+    <>
       <Navbar />
-      <div className="text-center py-3">
-        <h1>Contact Us page.</h1>
-      </div>
-    </div>
+      <Card style={{ width: "18rem" }}>
+        <Carousel>
+          <Carousel.Item>
+            <img className="d-block w-100" src={Image} alt="First slide" />
+          </Carousel.Item>
+          <Carousel.Item>
+            <img className="d-block w-100" src={Image1} alt="Second slide" />
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              className="d-block w-100"
+              src="https://via.placeholder.com/150"
+              alt="Third slide"
+            />
+          </Carousel.Item>
+        </Carousel>
+        <Card.Body>
+          <Card.Title>Carousel Card</Card.Title>
+          <Card.Text>
+            This is a card with a carousel of images inside it.
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    </>
   );
 };
 
-export default New;
+export default CarouselCard;
