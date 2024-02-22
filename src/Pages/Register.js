@@ -11,6 +11,7 @@ import { signInWithGooglePopup } from "../Firebase";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/userSlice";
+import Navbar from "./Navbar";
 
 const Register = () => {
   const userId = uuidv4();
@@ -181,7 +182,8 @@ const Register = () => {
                   </button>
                 </div>
                 <Link to="/login">Already have a account?</Link>
-                <br /><br />
+                <br />
+                <br />
                 <div className="text-center">
                   <h5>
                     <u>OR</u>

@@ -25,8 +25,7 @@ const UserNavbar = ({ handleLogout, user, cartItems }) => (
         About Us
       </Link>
     </div>
-    <div className="navbar-brand text-light mx-3">
-    </div>
+    <div className="navbar-brand text-light mx-3"></div>
     <div className="mx-3 dropdown text-end">
       <Link className="navbar-brand mx-4" to="/cart">
         <img src={Cart} alt="cart" height="30" width="35" />
@@ -137,6 +136,11 @@ const Navbar = () => {
   const admin = useSelector((state) => state.admin);
   const cartItems = useSelector((state) => state.totalItems);
 
+  const handleHome = (e) => {
+    e.preventDefault();
+    navigate("/")
+  }
+
   const handleLogout = () => {
     if (admin) {
       dispatch(logoutAdmin());
@@ -161,13 +165,35 @@ const Navbar = () => {
     }
   } else {
     return (
-      <nav className="navbar navbar-dark bg-dark py-1 d-flex justify-content-end">
-        <Link to="/login" className="btn btn-primary mx-2">
-          Login
-        </Link>
-        <Link to="/register" className="btn btn-primary mx-2">
-          Register
-        </Link>
+      <nav className="navbar navbar-dark bg-dark py-1">
+        <div className="d-flex justify-content-between mx-3">
+          <Link onClick={handleHome}>
+            <img
+              className="google-image mx-3"
+              src={Logo}
+              alt="egg"
+              height="45"
+              width="45"
+            />
+          </Link>
+          <Link to="/home" className="navbar-brand text-light mx-3">
+            Home
+          </Link>
+          <Link to="/contact" className="navbar-brand text-light mx-3">
+            Contact Us
+          </Link>
+          <Link to="/about" className="navbar-brand text-light mx-3">
+            About Us
+          </Link>
+        </div>
+        <div className="d-flex justify-content-end">
+          <Link to="/login" className="btn btn-primary mx-2">
+            Login
+          </Link>
+          <Link to="/register" className="btn btn-primary mx-2">
+            Register
+          </Link>
+        </div>
       </nav>
     );
   }

@@ -5,6 +5,7 @@ import { loginAdmin, loginUser } from "../redux/userSlice";
 import auth, { signInWithGooglePopup } from "../Firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db } from "../Firebase";
+import Navbar from "./Navbar";
 import logo1 from "./images/github.jpg";
 import logo2 from "./images/facebook.jpg";
 import "./logo.css";
@@ -126,7 +127,7 @@ const Login = () => {
     if (!toastClosed) {
       setTimeout(() => {
         setToastClosed(true);
-      }, 2000); 
+      }, 2000);
     }
   }, [toastClosed]);
 
@@ -165,7 +166,7 @@ const Login = () => {
                   <button
                     type="submit"
                     className="btn btn-primary btn-block"
-                    onClick= {notify}
+                    onClick={notify}
                   >
                     Sign in
                   </button>

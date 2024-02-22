@@ -3,9 +3,10 @@ import Navbar from "./Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { addToCart } from "../redux/userSlice";
 import { v4 as uuidv4 } from "uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import firebase from "firebase/compat/app";
+import ReactImageZoom from "react-image-zoom";
 import { ToastContainer, toast } from "react-toastify";
 
 const ProductInfomation = () => {
@@ -14,6 +15,7 @@ const ProductInfomation = () => {
   const [quantity, setQuantity] = useState("1");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.isAuthenticated);
 
   const incrementQuantity = () => {
     setQuantity((quantity) => Number(quantity) + 1);
@@ -30,13 +32,23 @@ const ProductInfomation = () => {
       position: "top-center",
       autoClose: 1500,
     });
+
+  const notifyNotToCart = () =>
+    toast.info("Login to Add Item to Cart.", {
+      position: "top-center",
+      autoClose: 1500,
+    });
   const db = firebase.firestore();
 
   const handleAddToCart = (product, quantity) => {
-    const cid = uuidv4();
-    const newObj = { ...product, cid, quantity: parseInt(quantity, 10) };
-    dispatch(addToCart(newObj));
-    notifyToCart();
+    if (isAuthenticated) {
+      const cid = uuidv4();
+      const newObj = { ...product, cid, quantity: parseInt(quantity, 10) };
+      dispatch(addToCart(newObj));
+      notifyToCart();
+    } else {
+      notifyNotToCart();
+    }
   };
 
   useEffect(() => {
@@ -66,26 +78,29 @@ const ProductInfomation = () => {
       <ToastContainer />
       <div
         className="container text-center m-3 border border-rounded bg-light p-2"
-        style={{ display: "flex", width: "1000px", height: "550px" }}
+        style={{ display: "flex", width: "800px", height: "400px" }}
       >
         {product ? (
           <>
             <div style={{ flex: 1 }}>
-              <img
-                className="card-img-top border border-rounded"
-                src={product.imageUrl}
-                alt="Product"
-                style={{
-                  height: "500px",
-                  width: "auto",
-                  objectFit: "cover",
-                }}
+              <ReactImageZoom
+                width={350}
+                height={350}
+                img={product.imageUrl} // URL of the main image
+                zoomImg={product.zoomImageUrl} // URL of the larger version of the image for zooming
+                style={{ objectFit: "cover" }}
               />
             </div>
             <div style={{ flex: 1, padding: "0 20px" }}>
               <div className="border border-rounded bg-white mt-3">
                 <h1 className="border-bottom">Product Information</h1>
-                <div>
+                <div className="form-group">
+                  <strong>Name:</strong> {product.name}
+                </div>
+                <div className="form-group">
+                  <strong>M.R.P:</strong> {product.price}
+                </div>
+                <div className="form-group">
                   <strong>Description:</strong> {product.description}
                 </div>
                 <div className="form-group">
@@ -134,8 +149,9 @@ const ProductInfomation = () => {
                   </div>
                 </div>
                 <div>
-                  <h6>In Stock:</h6> {product.stock}
+                  <strong>In Stock:</strong> {product.stock}
                 </div>
+
                 <button
                   className="btn btn-primary m-1"
                   onClick={() => handleAddToCart(product, quantity)}
@@ -151,9 +167,7 @@ const ProductInfomation = () => {
               </div>
             </div>
           </>
-        ) : (
-          null
-        )}
+        ) : null}
       </div>
     </>
   );
