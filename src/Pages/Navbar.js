@@ -134,7 +134,7 @@ const Navbar = () => {
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const user = useSelector((state) => state.user);
   const admin = useSelector((state) => state.admin);
-  const cartItems = useSelector((state) => state.totalItems);
+  const cartItems = 1;
 
   const handleHome = (e) => {
     e.preventDefault();

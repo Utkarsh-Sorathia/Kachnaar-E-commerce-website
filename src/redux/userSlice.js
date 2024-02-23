@@ -18,7 +18,6 @@ export const userSlice = createSlice({
     logoutUser: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      state.totalItems = 0;
     },
     loginAdmin: (state, action) => {
       state.isAuthenticated = true;
@@ -54,11 +53,13 @@ export const userSlice = createSlice({
         return item;
       });
       state.cart = updatedCart.filter((item) => item.quantity > 0);
-    
+
       // Recalculate totalItems based on the quantities of items in the updated cart
-      state.totalItems = state.cart.reduce((total, item) => total + item.quantity, 0);
+      state.totalItems = state.cart.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
     },
-    
 
     removeProduct: (state, action) => {
       state.products = state.products.filter(
@@ -67,6 +68,15 @@ export const userSlice = createSlice({
     },
     addProductToList: (state, action) => {
       state.products.push(action.payload);
+    },
+    updateQuantity: (state, action) => {
+      const { productId, newQuantity } = action.payload;
+      const productToUpdate = state.cart.find((item) => item.id === productId);
+
+      if (productToUpdate) {
+        // Update the quantity of the specified product
+        productToUpdate.quantity = newQuantity;
+      }
     },
     editProduct: (state, action) => {
       const { id, name, price, description } = action.payload;
@@ -90,6 +100,7 @@ export const {
   removeProduct,
   editProduct,
   addProductToList,
+  updateQuantity,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;

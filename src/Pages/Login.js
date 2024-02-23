@@ -5,7 +5,6 @@ import { loginAdmin, loginUser } from "../redux/userSlice";
 import auth, { signInWithGooglePopup } from "../Firebase";
 import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db } from "../Firebase";
-import Navbar from "./Navbar";
 import logo1 from "./images/github.jpg";
 import logo2 from "./images/facebook.jpg";
 import "./logo.css";

@@ -12,9 +12,11 @@ import { ToastContainer, toast } from "react-toastify";
 const ProductInfomation = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState("1");
+  const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const email = useSelector((state) => state.user);
+  const db = firebase.firestore();
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
 
   const incrementQuantity = () => {
@@ -38,17 +40,54 @@ const ProductInfomation = () => {
       position: "top-center",
       autoClose: 1500,
     });
-  const db = firebase.firestore();
 
   const handleAddToCart = (product, quantity) => {
-    if (isAuthenticated) {
-      const cid = uuidv4();
-      const newObj = { ...product, cid, quantity: parseInt(quantity, 10) };
-      dispatch(addToCart(newObj));
-      notifyToCart();
-    } else {
+    if (!isAuthenticated) {
       notifyNotToCart();
+      return;
     }
+
+    db.collection("users")
+      .where("email", "==", email)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          let cart = doc.data().cart || [];
+          let productExists = false;
+
+          // Check if the product already exists in the cart
+          cart.forEach((item) => {
+            if (item.id === product.id) {
+              // If the product exists, update its quantity
+              item.quantity += quantity;
+              productExists = true;
+            }
+          });
+
+          // If the product doesn't exist, add it to the cart with a unique ID
+          if (!productExists) {
+            cart.push({
+              ...product,
+              cartItemId: uuidv4(), // Generate unique ID for the product in the cart
+              quantity: quantity,
+            });
+          }
+
+          doc.ref
+            .update({ cart: cart })
+            .then(() => {
+              notifyToCart();
+            })
+            .catch((error) => {
+              console.error("Error updating document: ", error);
+              toast.error("Error adding to cart. Please try again later.");
+            });
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Error adding to cart. Please try again later.");
+      });
   };
 
   useEffect(() => {

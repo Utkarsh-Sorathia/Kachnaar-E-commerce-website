@@ -32,6 +32,7 @@ const Address = () => {
                       className="form-control "
                       id="inputEmail4"
                       placeholder="House Number (e.g. 25, 48...)"
+                      required
                     />
                   </div>
                   <div className="form-group col-md-6 p-2">

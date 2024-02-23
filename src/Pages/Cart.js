@@ -1,17 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../redux/userSlice";
 import Navbar from "./Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import firebase from "firebase/compat/app";
 import { ToastContainer, toast } from "react-toastify";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [quantity, setQuantity] = useState("0");
+  const email = useSelector((state) => state.user);
+  const [quantity, setQuantity] = useState(1);
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
+  const [cartProducts, setCartProducts] = useState([]);
+  const db = firebase.firestore();
+
+  useEffect(() => {
+    db.collection("users")
+      .where("email", "==", email)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const cart = doc.data().cart.map((item) => item);
+          setCartProducts(cart);
+        });
+      });
+  }, [db,email,cartProducts]);
 
   const incrementQuantity = () => {
     setQuantity((quantity) => Number(quantity) + 1);
@@ -29,26 +45,55 @@ const Cart = () => {
       autoClose: 1500,
     });
 
-  const handleRemoveFromCart = (productId, quantityToRemove) => {
-    dispatch(
-      removeFromCart({
-        cid: productId,
-        quantityToRemove: parseInt(quantityToRemove, 10),
-      })
-    );
-  };
+    const handleRemoveFromCart = (productId, quantityToRemove) => {
+      // Remove the item from Firestore
+      db.collection("users")
+        .where("email", "==", email)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const cart = doc.data().cart.map((item) => {
+              if (item.cid === productId) {
+                // Update the quantity or remove entirely based on quantityToRemove
+                if (item.quantity > quantityToRemove) {
+                  return { ...item, quantity: item.quantity - quantityToRemove };
+                } else {
+                  // If quantityToRemove is greater or equal, remove the item
+                  return null;
+                }
+              } else {
+                return item;
+              }
+            }).filter(Boolean); // Filter out null items (removed items)
+            // Update Firestore with the modified cart
+            doc.ref.update({ cart });
+          });
+        })
+        .catch((error) => {
+          console.error("Error removing item from cart:", error);
+        });
+    
+      // Dispatch action to update state (assuming this is synchronous)
+      dispatch(
+        removeFromCart({
+          cid: productId,
+          quantityToRemove: parseInt(quantityToRemove, 10),
+        })
+      );
+    };
+    
 
   // Calculate subtotal
-  const subtotal = cart.reduce((acc, product) => {
+  const subtotal = cartProducts.reduce((acc, product) => {
     return acc + product.price * product.quantity;
   }, 0);
 
-  const totalItemsInCart = cart.reduce((acc, product) => {
+  const totalItemsInCart = cartProducts.reduce((acc, product) => {
     return acc + product.quantity;
   }, 0);
 
   const handleAddress = () => {
-    if (cart == "") {
+    if (cartProducts == "") {
       EmptyCart();
     } else {
       navigate("/address");
@@ -75,8 +120,8 @@ const Cart = () => {
                 </button>
               </div>
               <ul className="list-group">
-                {cart && cart.length > 0 ? (
-                  cart.map((product, index) => (
+                {cartProducts && cartProducts.length > 0 ? (
+                  cartProducts.map((product, index) => (
                     <li
                       key={index}
                       className={
@@ -97,13 +142,12 @@ const Cart = () => {
                                 objectFit: "cover",
                               }}
                             />
-                            {product.name}
+                            <strong>{product.name}</strong>
                           </>
                         ) : (
                           <>{product.title}</>
                         )}
-                        - ₹{product.price * product.quantity} -{" "}
-                        {product.quantity}
+                        - ₹{product.price * product.quantity}-{product.quantity}
                       </span>
                       <div className="d-flex justify-content-between mx-2">
                         <div
@@ -131,7 +175,10 @@ const Cart = () => {
                           <span className="px-3 bg-white">{quantity}</span>
                           <button
                             className="btn btn-light border rounded"
-                            onClick={incrementQuantity}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              incrementQuantity();
+                            }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +204,7 @@ const Cart = () => {
                         <button
                           className="btn btn-danger"
                           onClick={() =>
-                            handleRemoveFromCart(product.cid, quantity)
+                            handleRemoveFromCart(product.cid,quantity)
                           }
                         >
                           Remove

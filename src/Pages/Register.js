@@ -11,7 +11,6 @@ import { signInWithGooglePopup } from "../Firebase";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/userSlice";
-import Navbar from "./Navbar";
 
 const Register = () => {
   const userId = uuidv4();
@@ -72,6 +71,7 @@ const Register = () => {
                 password: password,
                 name: name,
                 username: username,
+                cart : [],
               })
               .then((docRef) => {
                 console.log("Document written with ID:", docRef.id);
