@@ -9,6 +9,7 @@ export const userSlice = createSlice({
     products: [],
     cart: [],
     totalItems: 0,
+    billTotal: 0,
   },
   reducers: {
     loginUser: (state, action) => {
@@ -41,24 +42,8 @@ export const userSlice = createSlice({
       // state.totalItems = state.totalItems+ quantity;
     },
     removeFromCart: (state, action) => {
-      const { cid, quantityToRemove } = action.payload;
-      const updatedCart = state.cart.map((item) => {
-        if (item.cid === cid) {
-          const newQuantity = item.quantity - quantityToRemove;
-          return {
-            ...item,
-            quantity: newQuantity >= 0 ? newQuantity : 0,
-          };
-        }
-        return item;
-      });
-      state.cart = updatedCart.filter((item) => item.quantity > 0);
-
-      // Recalculate totalItems based on the quantities of items in the updated cart
-      state.totalItems = state.cart.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
+      const { cartItemId } = action.payload;
+      state.cart = state.cart.filter((item) => item.cartItemId !== cartItemId);
     },
 
     removeProduct: (state, action) => {
@@ -87,6 +72,9 @@ export const userSlice = createSlice({
         state.products[index].description = description;
       }
     },
+    setBillTotal: (state, action) => {
+      state.billTotal = action.payload;
+    }
   },
 });
 
@@ -101,6 +89,7 @@ export const {
   editProduct,
   addProductToList,
   updateQuantity,
+  setBillTotal,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;

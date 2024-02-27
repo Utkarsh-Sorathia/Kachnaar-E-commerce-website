@@ -1,16 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Login from "./Login"
+import Login from "./Login";
+import Logo from "./images/Logo.png"
 
 const Address = () => {
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const billTotal = useSelector((state) => state.billTotal);
 
-  const handleBuy = (e) => {
+  const handleBuy = async (e) => {
     e.preventDefault();
-    alert("Redirecting to Payment Gateway!");
+    setPaymentLoading(true);
+
+    const options = {
+      key: process.env.RAZORPAY_KEY,
+      amount: billTotal * 100, // amount in paisa
+      currency: "INR",
+      name: "Ramsung",
+      description: "Product Purchase",
+      image: {Logo},
+      handler: function (response) {
+        // handle success
+        alert("Payment successful");
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
+
+    setPaymentLoading(false);
   };
 
   return (
@@ -32,6 +59,7 @@ const Address = () => {
                       className="form-control "
                       id="inputEmail4"
                       placeholder="House Number (e.g. 25, 48...)"
+                      value=""
                       required
                     />
                   </div>
@@ -41,6 +69,7 @@ const Address = () => {
                       className="form-control"
                       id="inputPassword4"
                       placeholder="Street Name (e.g. 1234 Main St...)"
+                      required
                     />
                   </div>
                 </div>
@@ -50,6 +79,7 @@ const Address = () => {
                     className="form-control"
                     id="inputAddress"
                     placeholder="City (e.g. Surat...)"
+                    required
                   />
                 </div>
                 <div className="form-row">
@@ -65,6 +95,7 @@ const Address = () => {
                       className="form-control"
                       id="inputZip"
                       placeholder="Pincode"
+                      required
                     />
                   </div>
                 </div>
@@ -78,15 +109,17 @@ const Address = () => {
                     Check me out
                   </label>
                 </div>
+
                 <button
                   type="submit"
                   className="btn btn-primary mx-2"
                   onClick={handleBuy}
+                  disabled={paymentLoading}
                 >
-                  Buy Now
+                  {paymentLoading ? "Processing Payment..." : "Buy Now"}
                 </button>
                 <button
-                  type="submit"
+                  type="button"
                   className="btn btn-primary mx-2"
                   onClick={() => navigate("/cart")}
                 >
@@ -98,7 +131,7 @@ const Address = () => {
         </>
       ) : (
         <>
-        <Login />
+          <Login />
         </>
       )}
     </>

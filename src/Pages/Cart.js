@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart } from "../redux/userSlice";
 import Navbar from "./Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import firebase from "firebase/compat/app";
 import { ToastContainer, toast } from "react-toastify";
+import { setBillTotal } from "../redux/userSlice";
 
 const Cart = () => {
-  const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const email = useSelector((state) => state.user);
@@ -16,6 +15,7 @@ const Cart = () => {
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const [cartProducts, setCartProducts] = useState([]);
   const db = firebase.firestore();
+
 
   useEffect(() => {
     db.collection("users")
@@ -27,7 +27,7 @@ const Cart = () => {
           setCartProducts(cart);
         });
       });
-  }, [db,email,cartProducts]);
+  }, [db, email]);
 
   const incrementQuantity = () => {
     setQuantity((quantity) => Number(quantity) + 1);
@@ -45,43 +45,35 @@ const Cart = () => {
       autoClose: 1500,
     });
 
-    const handleRemoveFromCart = (productId, quantityToRemove) => {
-      // Remove the item from Firestore
-      db.collection("users")
-        .where("email", "==", email)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const cart = doc.data().cart.map((item) => {
-              if (item.cid === productId) {
-                // Update the quantity or remove entirely based on quantityToRemove
-                if (item.quantity > quantityToRemove) {
-                  return { ...item, quantity: item.quantity - quantityToRemove };
-                } else {
-                  // If quantityToRemove is greater or equal, remove the item
-                  return null;
-                }
-              } else {
-                return item;
-              }
-            }).filter(Boolean); // Filter out null items (removed items)
-            // Update Firestore with the modified cart
-            doc.ref.update({ cart });
-          });
-        })
-        .catch((error) => {
-          console.error("Error removing item from cart:", error);
+  const handleRemoveFromCart = (productId) => {
+    // dispatch(removeFromCart(cart.cartItemId));
+    db.collection("users")
+      .where("email", "==", email)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const updatedCart = doc
+            .data()
+            .cart.filter((item) => item.cartItemId !== productId);
+          doc.ref
+            .update({ cart: updatedCart })
+            .then(() => {
+              // Update the cartProducts state after successfully removing the item
+              setCartProducts(updatedCart);
+              toast.success("Item removed from cart", {
+                position: "top-right",
+                autoClose: 1500,
+              });
+            })
+            .catch((error) => {
+              console.error("Error updating cart after removing item:", error);
+            });
         });
-    
-      // Dispatch action to update state (assuming this is synchronous)
-      dispatch(
-        removeFromCart({
-          cid: productId,
-          quantityToRemove: parseInt(quantityToRemove, 10),
-        })
-      );
-    };
-    
+      })
+      .catch((error) => {
+        console.error("Error removing item from cart:", error);
+      });
+  };
 
   // Calculate subtotal
   const subtotal = cartProducts.reduce((acc, product) => {
@@ -114,7 +106,7 @@ const Cart = () => {
                 {/* Display subtotal here */}
                 <button
                   className="mx-2 btn btn-primary"
-                  onClick={handleAddress}
+                  onClick={() => {dispatch(setBillTotal(subtotal));handleAddress()}}
                 >
                   Proceed to Buy ({totalItemsInCart} items)
                 </button>
@@ -147,16 +139,20 @@ const Cart = () => {
                         ) : (
                           <>{product.title}</>
                         )}
-                        - ₹{product.price * product.quantity}-{product.quantity}
+                        - ₹{product.price * product.quantity}
                       </span>
                       <div className="d-flex justify-content-between mx-2">
                         <div
                           className="border rounded mx-auto align-items-center p-0 bg-white"
-                          style={{ width: "136px" }}
+                          style={{ width: "150px" }}
                         >
                           <button
                             className="btn btn-light border rounded"
-                            onClick={decrementQuantity}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              decrementQuantity();
+                              product.quantity = Number(product.quantity) - 1;
+                            }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -172,12 +168,15 @@ const Cart = () => {
                               />
                             </svg>
                           </button>
-                          <span className="px-3 bg-white">{quantity}</span>
+                          <span className="px-3 bg-white">
+                            {Number(product.quantity)}
+                          </span>
                           <button
                             className="btn btn-light border rounded"
                             onClick={(e) => {
                               e.stopPropagation();
                               incrementQuantity();
+                              product.quantity = Number(product.quantity) + 1;
                             }}
                           >
                             <svg
@@ -197,14 +196,14 @@ const Cart = () => {
                         </div>
                         <button
                           className="btn btn-primary mx-2"
-                          onClick={() => navigate("/address")}
+                          onClick={() => {dispatch(setBillTotal(product.price * product.quantity));navigate("/address")}}
                         >
                           Buy Now
                         </button>
                         <button
                           className="btn btn-danger"
                           onClick={() =>
-                            handleRemoveFromCart(product.cid,quantity)
+                            handleRemoveFromCart(product.cartItemId)
                           }
                         >
                           Remove

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import { useNavigate, useParams } from "react-router-dom";
-import { addToCart } from "../redux/userSlice";
+import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import firebase from "firebase/compat/app";
 import ReactImageZoom from "react-image-zoom";
@@ -13,8 +12,7 @@ const ProductInfomation = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const cartItemId = uuidv4();
   const email = useSelector((state) => state.user);
   const db = firebase.firestore();
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
@@ -46,6 +44,7 @@ const ProductInfomation = () => {
       notifyNotToCart();
       return;
     }
+    // dispatch(addToCart(product,quantity,cartItemId));
 
     db.collection("users")
       .where("email", "==", email)
@@ -55,20 +54,17 @@ const ProductInfomation = () => {
           let cart = doc.data().cart || [];
           let productExists = false;
 
-          // Check if the product already exists in the cart
           cart.forEach((item) => {
             if (item.id === product.id) {
-              // If the product exists, update its quantity
               item.quantity += quantity;
               productExists = true;
             }
           });
 
-          // If the product doesn't exist, add it to the cart with a unique ID
           if (!productExists) {
             cart.push({
               ...product,
-              cartItemId: uuidv4(), // Generate unique ID for the product in the cart
+              cartItemId,
               quantity: quantity,
             });
           }
@@ -125,8 +121,8 @@ const ProductInfomation = () => {
               <ReactImageZoom
                 width={350}
                 height={350}
-                img={product.imageUrl} // URL of the main image
-                zoomImg={product.zoomImageUrl} // URL of the larger version of the image for zooming
+                img={product.imageUrl} 
+                zoomImg={product.zoomImageUrl}
                 style={{ objectFit: "cover" }}
               />
             </div>
@@ -196,12 +192,6 @@ const ProductInfomation = () => {
                   onClick={() => handleAddToCart(product, quantity)}
                 >
                   Add to Cart
-                </button>
-                <button
-                  className="btn btn-primary m-1"
-                  onClick={() => navigate("/address")}
-                >
-                  Buy Now
                 </button>
               </div>
             </div>

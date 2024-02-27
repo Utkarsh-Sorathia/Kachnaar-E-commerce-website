@@ -5,6 +5,7 @@ import firebase from "firebase/compat/app";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // State to track sort order
   const navigate = useNavigate();
   const [firestoreProducts, setFirestoreProducts] = useState([]);
   const db = firebase.firestore();
@@ -20,6 +21,23 @@ const Home = () => {
     return () => unsubscribe();
   }, [db]);
 
+  // Function to toggle sort order
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+  };
+
+  // Function to sort products based on price
+  const sortProductsByPrice = (products) => {
+    const sortedProducts = [...products].sort((a, b) => {
+      if (sortOrder === "ascending") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    });
+    return sortedProducts;
+  };
+
   return (
     <>
       <div className="bg-light">
@@ -27,29 +45,30 @@ const Home = () => {
         <div className="container mt-3">
           <div className="row">
             <div className="col">
-              <header className="text-center mb-2">
-                <h1>Products</h1>
-              </header>
-              <div className="form-group col-md-4 p-2">
+              <div className="d-flex form-group col-md-4 mx-1">
                 <input
-                  className="form-control"
+                  className="form-control mx-3"
                   value={searchValue}
                   onChange={(e) => {
                     setSearchValue(e.target.value);
                   }}
                   placeholder="Search Here..."
                 />
+                <button
+                  className="btn btn-primary"
+                  onClick={toggleSortOrder}
+                >
+                  Sort By Price ({sortOrder === "ascending" ? "Ascending" : "Descending"})
+                </button>
               </div>
             </div>
           </div>
         </div>
         <div className="row justify-content-space m-3 border-rounded bg-white p-3">
           {/* Firestore products rendering */}
-          {firestoreProducts
-            .filter((val) => {
+          {sortProductsByPrice(firestoreProducts.filter((val) => {
               return val.name.toLowerCase().includes(searchValue.toLowerCase());
-            })
-            .map((product, index) => (
+            })).map((product, index) => (
               <div className="col-md-3 mb-2 " key={index}>
                 <div className="card">
                   <div

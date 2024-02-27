@@ -2,8 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutAdmin, logoutUser } from "../redux/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "./images/Logo.png";
+import firebase from "firebase/compat/app";
 import "./logo.css";
 import Cart from "./images/shopping-cart-icon.png";
+import { useEffect, useState } from "react";
 
 const UserNavbar = ({ handleLogout, user, cartItems }) => (
   <nav className="navbar navbar-exand-lg navbar-dark bg-dark">
@@ -133,8 +135,22 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const user = useSelector((state) => state.user);
+  const email = useSelector((state) => state.user);
+  const [cartProducts, setCartProducts] = useState([]);
   const admin = useSelector((state) => state.admin);
+  const db = firebase.firestore();
   const cartItems = 1;
+  useEffect(() => {
+    db.collection("users")
+      .where("email", "==", email)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const cart = doc.data().cart.map((item) => item);
+          setCartProducts(cart);
+        });
+      });
+  }, [db, email]);
 
   const handleHome = (e) => {
     e.preventDefault();
