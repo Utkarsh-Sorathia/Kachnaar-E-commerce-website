@@ -11,17 +11,30 @@ import "./logo.css";
 import logo from "./images/google.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "./Navbar";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState("password");
+  const [icon, setIcon] = useState("fa-solid fa-eye-slash");
   const [userType, setUserType] = useState("User");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const notify = () => toast.success("Logged In Successfully");
+  const notifyNot = () => toast.error("Invalid Username  or Password!");
   const [toastClosed, setToastClosed] = useState(true);
 
   const specificAdminId = "admin@gmail.com";
+
+  const handleHidePassword = () => {
+    setType((prevType) => (prevType === "password" ? "text" : "password"));
+    setIcon((prevIcon) =>
+      prevIcon === "fa-solid fa-eye-slash"
+        ? "fa-solid fa-eye"
+        : "fa-solid fa-eye-slash"
+    );
+  };
 
   const Googleuser = async () => {
     const response = await signInWithGooglePopup();
@@ -37,6 +50,7 @@ const Login = () => {
             .add({ email: user.email })
             .then((docRef) => {
               console.log("Document written with ID:", docRef.id);
+              notify();
               if (userType == "Admin") {
                 navigateAfterToast("/admin");
               } else {
@@ -48,6 +62,7 @@ const Login = () => {
             });
         } else {
           console.log("Duplicate data found");
+          notify();
           if (userType == "Admin") {
             navigateAfterToast("/admin");
           } else {
@@ -105,6 +120,7 @@ const Login = () => {
             const displayName = user.email;
             updateProfile(user, { displayName });
             dispatch(loginAdmin(res.user.email));
+            notify();
             navigateAfterToast("/admin");
           } else {
             alert("You are not authorized to access the admin page.");
@@ -113,11 +129,12 @@ const Login = () => {
           const displayName = user.email;
           updateProfile(user, { displayName });
           dispatch(loginUser(res.user.email));
+          notify();
           navigateAfterToast("/home");
         }
       })
       .catch((error) => {
-        alert("Invalid Username or Password");
+        notifyNot();
         console.log(error);
       });
   };
@@ -132,6 +149,7 @@ const Login = () => {
 
   return (
     <>
+      <Navbar />
       <div className="container2 ">
         <div className="d-flex justify-content-center align-items-center vh-100">
           <div
@@ -147,26 +165,29 @@ const Login = () => {
                       type="email"
                       className="form-control form-control-lg"
                       value={email}
+                      placeholder="Email address"
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
-                    <label className="form-label">Email address</label>
                   </div>
-                  <div className="form-outline mb-4">
+                  <div className="form-outline mb-4 d-flex align-items-center position-relative">
                     <input
-                      type="password"
+                      type={type}
+                      placeholder="Password"
                       className="form-control form-control-lg"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      required
                     />
-                    <label className="form-label">Password</label>
+                    <span
+                      className="position-absolute end-0 top-50 translate-middle-y"
+                      onClick={handleHidePassword}
+                      style={{ cursor: "pointer", marginRight: "10px" }}
+                    >
+                      <i className={icon}></i>
+                    </span>
                   </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-block"
-                    onClick={notify}
-                  >
+
+                  <button type="submit" className="btn btn-primary btn-block">
                     Sign in
                   </button>
                   <ToastContainer position="top-right" autoClose={2000} />

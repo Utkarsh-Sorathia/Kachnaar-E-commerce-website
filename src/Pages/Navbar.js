@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAdmin, logoutUser } from "../redux/userSlice";
+import { logoutAdmin, logoutUser, setCartItemsTotal } from "../redux/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "./images/Logo.png";
-import firebase from "firebase/compat/app";
 import "./logo.css";
 import Cart from "./images/shopping-cart-icon.png";
 import { useEffect, useState } from "react";
+import firebase from "firebase/compat/app";
 
 const UserNavbar = ({ handleLogout, user, cartItems }) => (
   <nav className="navbar navbar-exand-lg navbar-dark bg-dark">
@@ -31,9 +31,9 @@ const UserNavbar = ({ handleLogout, user, cartItems }) => (
     <div className="mx-3 dropdown text-end">
       <Link className="navbar-brand mx-4" to="/cart">
         <img src={Cart} alt="cart" height="30" width="35" />
-        <span class="h-75 position-absolute top-2 start-95 translate-middle badge rounded-pill bg-light text-dark">
+        <span className="h-75 position-absolute top-2 start-95 translate-middle badge rounded-pill bg-light text-dark">
           {cartItems}
-          <span class="visually-hidden">unread messages</span>
+          <span className="visually-hidden">unread messages</span>
         </span>
       </Link>
       <a
@@ -57,9 +57,7 @@ const UserNavbar = ({ handleLogout, user, cartItems }) => (
       >
         <li>
           {user ? (
-            <Link to="/profile">
-              <p className="dropdown-item">Hi, {user}!</p>
-            </Link>
+            <p className="dropdown-item">Hi, {user}!</p>
           ) : (
             <p className="dropdown-item">Hi, admin!</p>
           )}
@@ -135,11 +133,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const user = useSelector((state) => state.user);
-  const email = useSelector((state) => state.user);
-  const [cartProducts, setCartProducts] = useState([]);
   const admin = useSelector((state) => state.admin);
+  const [cartProducts, setCartProducts] = useState([]);
   const db = firebase.firestore();
-  const cartItems = 1;
+  const email = useSelector((state) => state.user);
+
   useEffect(() => {
     db.collection("users")
       .where("email", "==", email)
@@ -152,10 +150,14 @@ const Navbar = () => {
       });
   }, [db, email]);
 
+  const totalItemsInCart = cartProducts.reduce((acc, product) => {
+    return acc + product.quantity;
+  }, 0);
+
   const handleHome = (e) => {
     e.preventDefault();
-    navigate("/")
-  }
+    navigate("/");
+  };
 
   const handleLogout = () => {
     if (admin) {
@@ -175,7 +177,7 @@ const Navbar = () => {
         <UserNavbar
           handleLogout={handleLogout}
           user={user}
-          cartItems={cartItems}
+          cartItems={totalItemsInCart}
         />
       );
     }

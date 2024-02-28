@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import firebase from "firebase/compat/app";
 import ReactImageZoom from "react-image-zoom";
 import { ToastContainer, toast } from "react-toastify";
+import { setBillTotal } from "../redux/userSlice";
 
 const ProductInfomation = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cartItemId = uuidv4();
   const email = useSelector((state) => state.user);
   const db = firebase.firestore();
@@ -152,12 +155,12 @@ const ProductInfomation = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"
                         height="20"
-                        fill="currentColor"
+                        fillRule="currentColor"
                         class="text-danger bi bi-dash-lg"
                         viewBox="0 0 16 16"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"
                         />
                       </svg>
@@ -171,12 +174,12 @@ const ProductInfomation = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"
                         height="20"
-                        fill="currentColor"
-                        class="bi bi-plus-lg"
+                        fillRule="currentColor"
+                        className="bi bi-plus-lg"
                         viewBox="0 0 16 16"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
                         />
                       </svg>
@@ -192,6 +195,12 @@ const ProductInfomation = () => {
                   onClick={() => handleAddToCart(product, quantity)}
                 >
                   Add to Cart
+                </button>
+                <button
+                  className="btn btn-primary m-1"
+                  onClick={() => {dispatch(setBillTotal(quantity * product.price)); navigate("/address")}}
+                >
+                 Buy Now
                 </button>
               </div>
             </div>

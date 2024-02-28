@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import Navbar from "./Navbar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Login from "./Login";
-import Logo from "./images/Logo.png"
+import Logo from "./images/Logo.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 const Address = () => {
   const navigate = useNavigate();
@@ -16,15 +19,26 @@ const Address = () => {
     setPaymentLoading(true);
 
     const options = {
-      key: process.env.RAZORPAY_KEY,
+      key: process.env.REACT_APP_RAZORPAY_KEY,
       amount: billTotal * 100, // amount in paisa
       currency: "INR",
       name: "Ramsung",
       description: "Product Purchase",
-      image: {Logo},
+      image: { Logo },
       handler: function (response) {
         // handle success
-        alert("Payment successful");
+        //alert(`Payment successful \n ID: ${response.razorpay_payment_id}`);
+        Swal.fire({
+          title: "Payment  Successful!",
+          text: `Payment Id : ${response.razorpay_payment_id}`,
+          icon: "success",
+        });
+        // toast.success(
+        //   `Payment successful \n ID: ${response.razorpay_payment_id}`,
+        //   {
+        //     position: "top-right",
+        //   }
+        // );
       },
       notes: {
         address: "Razorpay Corporate Office",
@@ -43,6 +57,7 @@ const Address = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer />
       {isAuthenticated ? (
         <>
           <div className="bg-light">
@@ -131,7 +146,14 @@ const Address = () => {
         </>
       ) : (
         <>
-          <Login />
+          <div
+            className="container bg-light mt-3 p-3 text-center"
+            style={{ width: "630px" }}
+          >
+            <h1>
+              <Link to="/login">Login</Link> to get access to this page.
+            </h1>
+          </div>
         </>
       )}
     </>

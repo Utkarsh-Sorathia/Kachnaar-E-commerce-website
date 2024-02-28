@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { editProduct, removeProduct } from "../redux/userSlice";
@@ -11,16 +11,27 @@ function AddProduct({ onAddProduct }) {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
-  const [stock, setStock] = useState(0);
+  const [firestoreProducts, setFirestoreProducts] = useState([]);
   const [editingProductId, setEditingProductId] = useState(null);
   const [productImage, setProductImage] = useState(null);
   const admin = useSelector((state) => state.admin);
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
-  const notify = () => toast.warning("Please Fill all the details.");
+  const notify = () => toast.warning("Please Fill all the details.",{autoClose: 1500});
   const notifyAdd = () => toast.success("New Product Added.");
   const db = firebase.firestore();
   const storage = firebase.storage();
+
+  useEffect(() => {
+    const unsubscribe = db
+      .collection("productDataset")
+      .onSnapshot((snapshot) => {
+        const data = snapshot.docs.map((doc) => doc.data());
+        setFirestoreProducts(data);
+      });
+
+    return () => unsubscribe();
+  }, [db]);
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
@@ -40,7 +51,6 @@ function AddProduct({ onAddProduct }) {
       price: parseFloat(productPrice),
       description: productDescription,
       imageUrl: imageUrl,
-      stock: stock,
     };
     onAddProduct(product);
     db.collection("productDataset")
@@ -57,7 +67,6 @@ function AddProduct({ onAddProduct }) {
     setProductPrice("");
     setProductDescription("");
     setProductImage(null);
-    setStock(0);
   };
 
   const handleImageChange = (e) => {
@@ -88,7 +97,6 @@ function AddProduct({ onAddProduct }) {
       setProductPrice(productToEdit.price);
       setProductDescription(productToEdit.description);
       setProductImage(productToEdit.imageUrl);
-      setStock(productToEdit.stock);
     }
   };
 
@@ -106,7 +114,6 @@ function AddProduct({ onAddProduct }) {
         price: parseFloat(productPrice),
         description: productDescription,
         imageUrl: productImage,
-        stock: parseInt(stock),
       })
     );
     db.collection("productDataset")
@@ -115,7 +122,6 @@ function AddProduct({ onAddProduct }) {
         name: productName,
         price: parseFloat(productPrice),
         description: productDescription,
-        stock: parseInt(stock),
       })
       .then(() => {
         console.log("Product updated in Firestore:", editingProductId);
@@ -127,7 +133,6 @@ function AddProduct({ onAddProduct }) {
     setProductName("");
     setProductPrice("");
     setProductDescription("");
-    setStock(0);
   };
 
   return (
@@ -169,13 +174,6 @@ function AddProduct({ onAddProduct }) {
                     className="form-control mb-3"
                     required
                   />
-                  <input
-                    type="number"
-                    className="form-control mb-3"
-                    placeholder="Stock"
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                  />
                 </div>
                 <div className="d-flex justify-content-center">
                   <button
@@ -201,16 +199,14 @@ function AddProduct({ onAddProduct }) {
                 <tr>
                   <th className="text-center">Name</th>
                   <th className="text-center">Price</th>
-                  <th className="text-center">Stock</th>
                   <th className="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
+                {firestoreProducts.map((product) => (
                   <tr key={product.id}>
                     <td>{product.name}</td>
                     <td>₹{product.price}</td>
-                    <td>{product.stock}</td>
                     <td>
                       <button
                         className="btn btn-primary mx-2"

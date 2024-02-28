@@ -16,7 +16,6 @@ const Cart = () => {
   const [cartProducts, setCartProducts] = useState([]);
   const db = firebase.firestore();
 
-
   useEffect(() => {
     db.collection("users")
       .where("email", "==", email)
@@ -46,7 +45,6 @@ const Cart = () => {
     });
 
   const handleRemoveFromCart = (productId) => {
-    // dispatch(removeFromCart(cart.cartItemId));
     db.collection("users")
       .where("email", "==", email)
       .get()
@@ -58,7 +56,6 @@ const Cart = () => {
           doc.ref
             .update({ cart: updatedCart })
             .then(() => {
-              // Update the cartProducts state after successfully removing the item
               setCartProducts(updatedCart);
               toast.success("Item removed from cart", {
                 position: "top-right",
@@ -75,7 +72,6 @@ const Cart = () => {
       });
   };
 
-  // Calculate subtotal
   const subtotal = cartProducts.reduce((acc, product) => {
     return acc + product.price * product.quantity;
   }, 0);
@@ -102,11 +98,13 @@ const Cart = () => {
             <div className="cart-container">
               <h2 className="mb-4">My Cart</h2>
               <div className="d-flex mx-2 p-2">
-                <h3 className="mx-2">Sub-Total: ₹{subtotal}</h3>{" "}
-                {/* Display subtotal here */}
+                <h3 className="mx-2">Sub-Total: ₹{subtotal}</h3>
                 <button
                   className="mx-2 btn btn-primary"
-                  onClick={() => {dispatch(setBillTotal(subtotal));handleAddress()}}
+                  onClick={() => {
+                    dispatch(setBillTotal(subtotal));
+                    handleAddress();
+                  }}
                 >
                   Proceed to Buy ({totalItemsInCart} items)
                 </button>
@@ -144,33 +142,45 @@ const Cart = () => {
                       <div className="d-flex justify-content-between mx-2">
                         <div
                           className="border rounded mx-auto align-items-center p-0 bg-white"
-                          style={{ width: "150px" }}
+                          style={{ width: "135px" }}
                         >
                           <button
                             className="btn btn-light border rounded"
                             onClick={(e) => {
                               e.stopPropagation();
-                              decrementQuantity();
-                              product.quantity = Number(product.quantity) - 1;
+                              if (product.quantity > 1) {
+                                decrementQuantity();
+                                product.quantity = Number(product.quantity) - 1;
+                              }
                             }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="20"
                               height="20"
-                              fill="currentColor"
-                              class="text-danger bi bi-dash-lg"
+                              fillRule="currentColor"
+                              className="text-danger bi bi-dash-lg"
                               viewBox="0 0 16 16"
                             >
                               <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"
                               />
                             </svg>
                           </button>
-                          <span className="px-3 bg-white">
-                            {Number(product.quantity)}
-                          </span>
+                          <input
+                            type="text"
+                            className="bg-white border-0 text-center"
+                            style={{width:"40px"}}
+                            value={Number(product.quantity)}
+                            onChange={(e) => {
+                              const newValue = parseInt(e.target.value);
+                              if (!isNaN(newValue) && newValue >= 1) {
+                                incrementQuantity();
+                                product.quantity = newValue;
+                              }
+                            }}
+                          ></input>
                           <button
                             className="btn btn-light border rounded"
                             onClick={(e) => {
@@ -183,12 +193,12 @@ const Cart = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               width="20"
                               height="20"
-                              fill="currentColor"
-                              class="bi bi-plus-lg"
+                              fillRule="currentColor"
+                              className="bi bi-plus-lg"
                               viewBox="0 0 16 16"
                             >
                               <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
                               />
                             </svg>
@@ -196,7 +206,12 @@ const Cart = () => {
                         </div>
                         <button
                           className="btn btn-primary mx-2"
-                          onClick={() => {dispatch(setBillTotal(product.price * product.quantity));navigate("/address")}}
+                          onClick={() => {
+                            dispatch(
+                              setBillTotal(product.price * product.quantity)
+                            );
+                            navigate("/address");
+                          }}
                         >
                           Buy Now
                         </button>

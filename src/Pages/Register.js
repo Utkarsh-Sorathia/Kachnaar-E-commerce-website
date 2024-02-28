@@ -11,6 +11,7 @@ import { signInWithGooglePopup } from "../Firebase";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/userSlice";
+import Navbar from "./Navbar";
 
 const Register = () => {
   const userId = uuidv4();
@@ -18,9 +19,31 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState("password");
+  const [icon, setIcon] = useState("fa-solid fa-eye-slash");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [typeCo, setTypeCo] = useState("password");
+  const [iconCo, setIconCo] = useState("fa-solid fa-eye-slash");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleHidePassword = () => {
+    setType((prevType) => (prevType === "password" ? "text" : "password"));
+    setIcon((prevIcon) =>
+      prevIcon === "fa-solid fa-eye-slash"
+        ? "fa-solid fa-eye"
+        : "fa-solid fa-eye-slash"
+    );
+  };
+
+  const handleHideConfirmPassword = () => {
+    setTypeCo((prevType) => (prevType === "password" ? "text" : "password"));
+    setIconCo((prevIcon) =>
+      prevIcon === "fa-solid fa-eye-slash"
+        ? "fa-solid fa-eye"
+        : "fa-solid fa-eye-slash"
+    );
+  };
 
   const Googleuser = async () => {
     const response = await signInWithGooglePopup();
@@ -71,7 +94,7 @@ const Register = () => {
                 password: password,
                 name: name,
                 username: username,
-                cart : [],
+                cart: [],
               })
               .then((docRef) => {
                 console.log("Document written with ID:", docRef.id);
@@ -100,6 +123,7 @@ const Register = () => {
 
   return (
     <>
+      <Navbar />
       <div className="container2 d-flex justify-content-center align-items-center p-5 vh-200">
         <div
           className="container py-3 text-center border rounded"
@@ -115,23 +139,21 @@ const Register = () => {
                     id="username"
                     className="form-control form-control-lg"
                     value={username}
+                    placeholder="Username"
                     onChange={(e) => setUsername(e.target.value)}
                     required
                   />
-                  <label className="form-label" htmlFor="username">
-                    Username
-                  </label>
+                </div>
+                <div className="form-outline mb-2">
                   <input
                     type="text"
                     id="name"
                     className="form-control form-control-lg"
                     value={name}
+                    placeholder="Name"
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
-                  <label className="form-label" htmlFor="username">
-                    Name
-                  </label>
                 </div>
                 <div className="form-outline mb-2">
                   <input
@@ -139,41 +161,46 @@ const Register = () => {
                     id="email"
                     className="form-control form-control-lg"
                     value={email}
+                    placeholder="Email address"
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
-                  <label className="form-label" htmlFor="email">
-                    Email address
-                  </label>
                 </div>
-                <div className="form-outline mb-2">
+                <div className="form-outline mb-2 d-flex align-items-center position-relative">
                   <input
-                    type="password"
-                    id="password"
+                    type={type}
+                    placeholder="Password"
                     className="form-control form-control-lg"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
-                  <label className="form-label" htmlFor="password">
-                    Password
-                  </label>
+                  <span
+                    className="position-absolute end-0 top-50 translate-middle-y"
+                    onClick={handleHidePassword}
+                    style={{ cursor: "pointer", marginRight: "10px" }}
+                  >
+                    <i className={icon}></i>
+                  </span>
                 </div>
-                <div className="form-outline mb-2">
+                <div className="form-outline mb-2 d-flex align-items-center position-relative">
                   <input
-                    type="password"
-                    id="confirmPassword"
+                    type={typeCo}
+                    placeholder="Confirm Password"
                     className="form-control form-control-lg"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                   />
-                  <label className="form-label" htmlFor="confirmPassword">
-                    Confirm Password
-                  </label>
+                  <span
+                    className="position-absolute end-0 top-50 translate-middle-y"
+                    onClick={handleHideConfirmPassword}
+                    style={{ cursor: "pointer", marginRight: "10px" }}
+                  >
+                    <i className={iconCo}></i>
+                  </span>
                 </div>
-                <div className="text-center">
-                  {" "}
+                <div className="text-center mb-2">
                   <button
                     type="submit"
                     className="btn btn-primary btn-lg btn-block "

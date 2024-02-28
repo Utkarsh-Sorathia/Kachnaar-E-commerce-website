@@ -19,7 +19,7 @@ const CarouselCard = () => {
           <Carousel.Item>
             <img
               className="d-block w-100"
-              src="https://via.placeholder.com/150"
+              src="https://via.placeholder.com/250"
               alt="Third slide"
             />
           </Carousel.Item>

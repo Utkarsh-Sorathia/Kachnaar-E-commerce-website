@@ -74,7 +74,10 @@ export const userSlice = createSlice({
     },
     setBillTotal: (state, action) => {
       state.billTotal = action.payload;
-    }
+    },
+    setCartItemsTotal: (state, action) => {
+      state.totalItems = action.payload;
+    },
   },
 });
 
@@ -90,6 +93,7 @@ export const {
   addProductToList,
   updateQuantity,
   setBillTotal,
+  setCartItemsTotal,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;

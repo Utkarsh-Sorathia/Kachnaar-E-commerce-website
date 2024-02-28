@@ -8,6 +8,7 @@
 }
 
 .container2 {
+  height: 100vh;
   background: hsla(238, 100%, 71%, 1);
 
   background: linear-gradient(
