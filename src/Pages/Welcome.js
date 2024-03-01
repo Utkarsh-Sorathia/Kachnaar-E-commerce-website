@@ -1,137 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "./Navbar";
-import "./logo.css";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 
 const Welcome = () => {
+  const [firestoreProducts, setFirestoreProducts] = useState([]);
+  const db = firebase.firestore();
+
+  useEffect(() => {
+    const unsubscribe = db
+      .collection("productDataset")
+      .onSnapshot((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })); // Include document ID
+        setFirestoreProducts(data);
+      });
+
+    return () => unsubscribe();
+  }, [db]);
+
   return (
     <div>
       <Navbar />
       <div
         id="carouselExampleSlidesOnly"
-        className="carousel slide"
+        className="carousel slide p-3" // Apply padding
         data-bs-ride="carousel"
+        style={{ backgroundColor: "beige" }}
       >
         <div className="carousel-inner">
-          <div className="carousel-item active">
-            <div
-              className="container-fluid"
-              style={{ backgroundColor: "beige" }}
-            >
-              <div
-                className="row align-items-center"
-                style={{ height: "50vh" }}
-              >
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/07/09/06/bridge-7504605__340.jpg"
-                    className="d-block w-100"
-                    alt="..."
-                  />
+          {firestoreProducts.map((product, index) => {
+            if (index % 4 === 0) {
+              const slides = firestoreProducts.slice(index, index + 4);
+              return (
+                <div
+                  className={`carousel-item ${index === 0 ? "active" : ""}`}
+                  key={index}
+                >
+                  <div className="row">
+                    {slides.map((product, idx) => (
+                      <div className="col" key={idx}>
+                        <Link to={`/products/${product.id}`}>
+                          <img
+                            src={product.imageUrl}
+                            className="d-block w-100"
+                            alt={`Slide ${index + idx}`}
+                            style={{
+                              height: "300px",
+                              objectFit: "cover",
+                              borderRadius: "10px",
+                            }}
+                          />
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/15/21/23/cat-7523894__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2021/03/04/11/37/coast-6067736__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/15/06/45/danube-river-7522608__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="carousel-item" style={{ height: "50vh" }}>
-            <div
-              className="container-fluid"
-              style={{ backgroundColor: "beige" }}
-            >
-              <div
-                className="row align-items-center"
-                style={{ height: "50vh" }}
-              >
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/07/09/06/bridge-7504605__340.jpg"
-                    className="d-block w-100"
-                    alt="..."
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/15/21/23/cat-7523894__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2021/03/04/11/37/coast-6067736__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/15/06/45/danube-river-7522608__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="carousel-item" style={{ height: "50vh" }}>
-            <div
-              className="container-fluid"
-              style={{ backgroundColor: "beige" }}
-            >
-              <div
-                className="row align-items-center"
-                style={{ height: "50vh" }}
-              >
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/07/09/06/bridge-7504605__340.jpg"
-                    className="d-block w-100"
-                    alt="..."
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/15/21/23/cat-7523894__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2021/03/04/11/37/coast-6067736__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <img
-                    src="https://cdn.pixabay.com/photo/2022/10/15/06/45/danube-river-7522608__340.jpg"
-                    className="d-block w-100"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+              );
+            }
+            return null;
+          })}
         </div>
         <button
           className="carousel-control-prev"

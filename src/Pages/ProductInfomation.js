@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import firebase from "firebase/compat/app";
 import ReactImageZoom from "react-image-zoom";
 import { ToastContainer, toast } from "react-toastify";
-import { setBillTotal } from "../redux/userSlice";
+import { addToCart, setBillTotal } from "../redux/userSlice";
 
 const ProductInfomation = () => {
   const { id } = useParams();
@@ -47,8 +47,7 @@ const ProductInfomation = () => {
       notifyNotToCart();
       return;
     }
-    // dispatch(addToCart(product,quantity,cartItemId));
-
+    dispatch(addToCart(product, quantity));
     db.collection("users")
       .where("email", "==", email)
       .get()
@@ -124,7 +123,7 @@ const ProductInfomation = () => {
               <ReactImageZoom
                 width={350}
                 height={350}
-                img={product.imageUrl} 
+                img={product.imageUrl}
                 zoomImg={product.zoomImageUrl}
                 style={{ objectFit: "cover" }}
               />
@@ -136,7 +135,7 @@ const ProductInfomation = () => {
                   <strong>Name:</strong> {product.name}
                 </div>
                 <div className="form-group">
-                  <strong>M.R.P:</strong> {product.price}
+                  <strong>M.R.P:</strong> ₹{product.price}
                 </div>
                 <div className="form-group">
                   <strong>Description:</strong> {product.description}
@@ -186,10 +185,6 @@ const ProductInfomation = () => {
                     </button>
                   </div>
                 </div>
-                <div>
-                  <strong>In Stock:</strong> {product.stock}
-                </div>
-
                 <button
                   className="btn btn-primary m-1"
                   onClick={() => handleAddToCart(product, quantity)}
@@ -198,9 +193,12 @@ const ProductInfomation = () => {
                 </button>
                 <button
                   className="btn btn-primary m-1"
-                  onClick={() => {dispatch(setBillTotal(quantity * product.price)); navigate("/address")}}
+                  onClick={() => {
+                    dispatch(setBillTotal(quantity * product.price));
+                    navigate("/address");
+                  }}
                 >
-                 Buy Now
+                  Buy Now
                 </button>
               </div>
             </div>

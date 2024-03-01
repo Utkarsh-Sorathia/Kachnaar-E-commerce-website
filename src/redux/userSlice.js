@@ -19,6 +19,8 @@ export const userSlice = createSlice({
     logoutUser: (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      state.cart = []
+      state.totalItems = 0;
     },
     loginAdmin: (state, action) => {
       state.isAuthenticated = true;
@@ -54,15 +56,7 @@ export const userSlice = createSlice({
     addProductToList: (state, action) => {
       state.products.push(action.payload);
     },
-    updateQuantity: (state, action) => {
-      const { productId, newQuantity } = action.payload;
-      const productToUpdate = state.cart.find((item) => item.id === productId);
 
-      if (productToUpdate) {
-        // Update the quantity of the specified product
-        productToUpdate.quantity = newQuantity;
-      }
-    },
     editProduct: (state, action) => {
       const { id, name, price, description } = action.payload;
       const index = state.products.findIndex((product) => product.id === id);
@@ -75,7 +69,7 @@ export const userSlice = createSlice({
     setBillTotal: (state, action) => {
       state.billTotal = action.payload;
     },
-    setCartItemsTotal: (state, action) => {
+    setCartItemTotal: (state, action) => {
       state.totalItems = action.payload;
     },
   },
@@ -91,9 +85,8 @@ export const {
   removeProduct,
   editProduct,
   addProductToList,
-  updateQuantity,
   setBillTotal,
-  setCartItemsTotal,
+  setCartItemTotal,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;

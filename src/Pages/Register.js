@@ -22,23 +22,12 @@ const Register = () => {
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState("fa-solid fa-eye-slash");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [typeCo, setTypeCo] = useState("password");
-  const [iconCo, setIconCo] = useState("fa-solid fa-eye-slash");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleHidePassword = () => {
     setType((prevType) => (prevType === "password" ? "text" : "password"));
     setIcon((prevIcon) =>
-      prevIcon === "fa-solid fa-eye-slash"
-        ? "fa-solid fa-eye"
-        : "fa-solid fa-eye-slash"
-    );
-  };
-
-  const handleHideConfirmPassword = () => {
-    setTypeCo((prevType) => (prevType === "password" ? "text" : "password"));
-    setIconCo((prevIcon) =>
       prevIcon === "fa-solid fa-eye-slash"
         ? "fa-solid fa-eye"
         : "fa-solid fa-eye-slash"
@@ -185,20 +174,13 @@ const Register = () => {
                 </div>
                 <div className="form-outline mb-2 d-flex align-items-center position-relative">
                   <input
-                    type={typeCo}
+                    type="password"
                     placeholder="Confirm Password"
                     className="form-control form-control-lg"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                   />
-                  <span
-                    className="position-absolute end-0 top-50 translate-middle-y"
-                    onClick={handleHideConfirmPassword}
-                    style={{ cursor: "pointer", marginRight: "10px" }}
-                  >
-                    <i className={iconCo}></i>
-                  </span>
                 </div>
                 <div className="text-center mb-2">
                   <button

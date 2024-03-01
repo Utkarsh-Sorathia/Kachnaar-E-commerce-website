@@ -11,10 +11,50 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const email = useSelector((state) => state.user);
-  const [quantity, setQuantity] = useState(1);
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const [cartProducts, setCartProducts] = useState([]);
   const db = firebase.firestore();
+
+  const updateCartInFirestore = (updatedCart) => {
+    db.collection("users")
+      .where("email", "==", email)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref
+            .update({ cart: updatedCart })
+            .then(() => {
+              setCartProducts(updatedCart);
+            })
+            .catch((error) => {
+              console.error("Error updating quantity:", error);
+            });
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating quantity:", error);
+      });
+  };
+
+  const incrementQuantity = (productId) => {
+    const updatedCart = cartProducts.map((item) => {
+      if (item.cartItemId === productId) {
+        return { ...item, quantity: item.quantity + 1 };
+      }
+      return item;
+    });
+    updateCartInFirestore(updatedCart);
+  };
+
+  const decrementQuantity = (productId) => {
+    const updatedCart = cartProducts.map((item) => {
+      if (item.cartItemId === productId && item.quantity > 1) {
+        return { ...item, quantity: item.quantity - 1 };
+      }
+      return item;
+    });
+    updateCartInFirestore(updatedCart);
+  };
 
   useEffect(() => {
     db.collection("users")
@@ -27,16 +67,6 @@ const Cart = () => {
         });
       });
   }, [db, email]);
-
-  const incrementQuantity = () => {
-    setQuantity((quantity) => Number(quantity) + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity((quantity) => Number(quantity) - 1);
-    }
-  };
 
   const EmptyCart = () =>
     toast.info("Cart is Empty.", {
@@ -171,7 +201,7 @@ const Cart = () => {
                           <input
                             type="text"
                             className="bg-white border-0 text-center"
-                            style={{width:"40px"}}
+                            style={{ width: "40px" }}
                             value={Number(product.quantity)}
                             onChange={(e) => {
                               const newValue = parseInt(e.target.value);
@@ -180,7 +210,7 @@ const Cart = () => {
                                 product.quantity = newValue;
                               }
                             }}
-                          ></input>
+                          />
                           <button
                             className="btn btn-light border rounded"
                             onClick={(e) => {

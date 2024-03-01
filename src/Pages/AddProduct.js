@@ -17,7 +17,8 @@ function AddProduct({ onAddProduct }) {
   const admin = useSelector((state) => state.admin);
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
-  const notify = () => toast.warning("Please Fill all the details.",{autoClose: 1500});
+  const notify = () =>
+    toast.warning("Please Fill all the details.", { autoClose: 1500 });
   const notifyAdd = () => toast.success("New Product Added.");
   const db = firebase.firestore();
   const storage = firebase.storage();
@@ -74,19 +75,41 @@ function AddProduct({ onAddProduct }) {
     setProductImage(imageFile);
   };
 
-  const handleRemoveProduct = (productId) => {
-    dispatch(removeProduct({ id: productId }));
-    console.log("Removing product with ID:", productId);
-    // Remove product from Firestore
-    db.collection("productDataset")
-      .doc(productId)
-      .delete()
-      .then(() => {
-        console.log("Product removed from Firestore:", productId);
-      })
-      .catch((error) => {
-        console.error("Error removing product from Firestore: ", error);
-      });
+  const handleRemoveProduct = async (productId) => {
+    // Find the product in firestoreProducts array
+    const productToRemove = firestoreProducts.find(
+      (product) => product.id === productId
+    );
+    if (productToRemove) {
+      // Remove the product from the Redux state
+      dispatch(removeProduct({ id: productId }));
+      console.log("Removing product with ID:", productId);
+
+      // Remove product from Firestore
+      db.collection("productDataset")
+        .doc(productId)
+        .delete()
+        .then(async () => {
+          console.log("Product removed from Firestore:", productId);
+
+          // Remove image from Firebase Storage
+          try {
+            await firebase
+              .storage()
+              .refFromURL(productToRemove.imageUrl)
+              .delete();
+            console.log(
+              "Image removed from Storage:",
+              productToRemove.imageUrl
+            );
+          } catch (error) {
+            console.error("Error removing image from Storage:", error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error removing product from Firestore: ", error);
+        });
+    }
   };
 
   const handleEditProduct = (productId) => {
