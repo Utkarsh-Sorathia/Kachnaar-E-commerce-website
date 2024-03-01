@@ -8,7 +8,7 @@ const SearchInformation = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const apiKey = "AIzaSyD2vBfkL0NpDCyAbZhUjefcxvX5223LbO4"; // Replace with your actual API key
+  const apiKey = process.env.REACT_APP_GOOGLE_KG_API_KEY; // Replace with your actual API key
   const search = async () => {
     try {
       const response = await axios.get(
