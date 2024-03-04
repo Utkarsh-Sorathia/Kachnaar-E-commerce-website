@@ -77,7 +77,7 @@ const Home = () => {
               return val.name.toLowerCase().includes(searchValue.toLowerCase());
             })
           ).map((product, index) => (
-            <div className="col-md-3 mb-2 " key={index}>
+            <div className="col-md-3 mb-2" key={index}>
               <div className="card">
                 <div
                   onClick={() => navigate(`/products/${product.id}`)}

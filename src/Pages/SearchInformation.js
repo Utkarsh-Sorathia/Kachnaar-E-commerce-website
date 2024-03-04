@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
+import "./logo.css"
 
 const SearchInformation = () => {
   const { query } = useParams();
@@ -36,15 +37,26 @@ const SearchInformation = () => {
           {loading === true ? (
             <p>Loading...</p>
           ) : (
-            <div>
-              <h2>{results.name}</h2>
-              <p>{results.description}</p>
-             
-                <p>{results.detailedDescription.articleBody}</p>
-             
-            
-                <img src={results.image.contentUrl} alt={results.name} />
-            
+            <div className="card-container col-md-3 mb-2">
+              <div className="card">
+                <img
+                  className="card-img-top"
+                  src={results.image.contentUrl}
+                  alt={results.name}
+                  style={{
+                    height: "300px",
+                    width: "270px",
+                    objectFit: "cover",
+                  }}
+                />
+                <div className="card-body">
+                  <h4 className="card-title">{results.name}</h4>
+
+                  <p className="card-text">
+                    {results.detailedDescription.articleBody}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
