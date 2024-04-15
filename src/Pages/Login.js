@@ -23,7 +23,8 @@ const Login = () => {
   const navigate = useNavigate();
   const notify = () => toast.success("Logged In Successfully");
   const notifyNot = () => toast.error("Invalid Username  or Password!");
-  const [toastClosed, setToastClosed] = useState(true);
+
+  const [isToastClosed, setIsToastClosed] = useState(true);
 
   const specificAdminId = "admin@gmail.com";
 
@@ -51,11 +52,6 @@ const Login = () => {
             .then((docRef) => {
               console.log("Document written with ID:", docRef.id);
               notify();
-              if (userType == "Admin") {
-                navigateAfterToast("/admin");
-              } else {
-                navigateAfterToast("/home");
-              }
             })
             .catch((error) => {
               console.error("Error adding document:", error);
@@ -63,24 +59,11 @@ const Login = () => {
         } else {
           console.log("Duplicate data found");
           notify();
-          if (userType == "Admin") {
-            navigateAfterToast("/admin");
-          } else {
-            navigateAfterToast("/home");
-          }
         }
       })
       .catch((error) => {
         console.error("Error querying document:", error);
       });
-  };
-
-  const navigateAfterToast = (path) => {
-    setToastClosed(false);
-    setTimeout(() => {
-      navigate(path);
-      setToastClosed(true);
-    }, 2000);
   };
 
   const handleSubmit = (event) => {
@@ -121,7 +104,6 @@ const Login = () => {
             updateProfile(user, { displayName });
             dispatch(loginAdmin(res.user.email));
             notify();
-            navigateAfterToast("/admin");
           } else {
             alert("You are not authorized to access the admin page.");
           }
@@ -130,7 +112,6 @@ const Login = () => {
           updateProfile(user, { displayName });
           dispatch(loginUser(res.user.email));
           notify();
-          navigateAfterToast("/home");
         }
       })
       .catch((error) => {
@@ -140,12 +121,12 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (!toastClosed) {
+    if (!isToastClosed) {
       setTimeout(() => {
-        setToastClosed(true);
+        setIsToastClosed(true);
       }, 2000);
     }
-  }, [toastClosed]);
+  }, [isToastClosed]);
 
   return (
     <>
@@ -190,7 +171,22 @@ const Login = () => {
                   <button type="submit" className="btn btn-primary btn-block">
                     Sign in
                   </button>
-                  <ToastContainer position="top-right" autoClose={2000} />
+                  <ToastContainer
+                    position="top-right"
+                    autoClose={2000}
+                    onClose={() => {
+                      setIsToastClosed(true);
+                      if (isToastClosed) {
+                        setTimeout(() => {
+                          if (userType === "Admin") {
+                            navigate("/admin");
+                          } else {
+                            navigate("/home");
+                          }
+                        }, 500);
+                      }
+                    }}
+                  />
                   <br />
                   <br />
                   <Link to="/register">Don't have a account?</Link>

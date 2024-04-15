@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAdmin, logoutUser } from "../redux/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "./images/Logo.png";
+import Logo from "./images/kachnar.jpeg";
 import "./logo.css";
 import Cart from "./images/shopping-cart-icon.png";
 import { useEffect, useState } from "react";
@@ -20,20 +20,43 @@ const UserNavbar = ({
     <div className="d-flex">
       <Link to="/">
         <img
-          className="google-image mx-3"
+          className="mx-3"
           src={Logo}
           alt="egg"
           height="45"
           width="45"
+          style={{
+            border: "2px solid white",
+            borderRadius: "10px",
+            objectFit: "cover",
+          }}
         />
       </Link>
-      <Link className="navbar-brand text-light mx-3" data-toggle="tooltip" data-placement="bottom" title="Home" to="/home">
+      <Link
+        className="navbar-brand text-light mx-3"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title="Home"
+        to="/home"
+      >
         Home
       </Link>
-      <Link className="navbar-brand text-light mx-3" to="/contact" data-toggle="tooltip" data-placement="bottom" title="Contact">
+      <Link
+        className="navbar-brand text-light mx-3"
+        to="/contact"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title="Contact"
+      >
         Contact Us
       </Link>
-      <Link className="navbar-brand text-light mx-3" to="/about" data-toggle="tooltip" data-placement="bottom" title="About">
+      <Link
+        className="navbar-brand text-light mx-3"
+        to="/about"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title="About"
+      >
         About Us
       </Link>
       <div className="search-box">
@@ -48,7 +71,9 @@ const UserNavbar = ({
             required
           />
           <button
-          data-toggle="tooltip" data-placement="bottom" title="Search"
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Search"
             type="submit"
             className="btn btn-sm btn-primary"
             onClick={() => navigate(`/search/${query}`)}
@@ -88,7 +113,9 @@ const UserNavbar = ({
       >
         <li>
           {user ? (
-            <p className="dropdown-item">Hi, {user}!</p>
+            <Link to="/profile" className="text-decoration-none">
+              <p className="dropdown-item">Hi, {user}!</p>
+            </Link>
           ) : (
             <p className="dropdown-item">Hi, admin!</p>
           )}
@@ -109,16 +136,21 @@ const UserNavbar = ({
 const AdminNavbar = ({ handleLogout, admin }) => (
   <nav className="navbar navbar-exand-lg navbar-dark bg-dark">
     <div>
-      <Link to="/">
+      <Link to="/admin/dashboard">
         <img
           className="google-image mx-3"
           src={Logo}
           alt="egg"
           height="45"
           width="45"
+          style={{
+            border: "2px solid white",
+            borderRadius: "10px",
+            objectFit: "cover",
+          }}
         />
       </Link>
-      <Link className="navbar-brand text-light mx-3" to="/admin">
+      <Link className="navbar-brand text-light mx-3" to="/admin/dashboard">
         Dashboard
       </Link>
       <Link className="navbar-brand text-light mx-3" to="/admin/add">
@@ -243,6 +275,11 @@ const Navbar = () => {
               alt="egg"
               height="45"
               width="45"
+              style={{
+                border: "2px solid white",
+                borderRadius: "10px",
+                objectFit: "cover",
+              }}
             />
           </Link>
           <Link to="/home" className="navbar-brand text-light mx-3">

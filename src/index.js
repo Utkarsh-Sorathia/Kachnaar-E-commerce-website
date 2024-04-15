@@ -35,7 +35,7 @@ root.render(
           <Route path={'/products/:id'} element={<ProductInfomation />} />
           <Route path="/address" element={<Address />}></Route>
           <Route path="/cart" element={<ShoppingCart />}></Route>
-          <Route path="/admin" element={<Dashboard />}></Route>
+          <Route path="/admin/dashboard" element={<Dashboard />}></Route>
           <Route path="/admin/add" element={<New />}></Route>
           <Route path="/admin/home" element={<AdminHome />}></Route>
           <Route path="/contact" element={<Contact />}></Route>

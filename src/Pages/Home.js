@@ -10,7 +10,6 @@ const Home = () => {
   const navigate = useNavigate();
   const [firestoreProducts, setFirestoreProducts] = useState([]);
   const db = firebase.firestore();
-  const { id } = useParams();
 
   useEffect(() => {
     const unsubscribe = db

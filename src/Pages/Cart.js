@@ -127,18 +127,6 @@ const Cart = () => {
           <div className="container mt-5">
             <div className="cart-container">
               <h2 className="mb-4">My Cart</h2>
-              <div className="d-flex mx-2 p-2">
-                <h3 className="mx-2">Sub-Total: ₹{subtotal}</h3>
-                <button
-                  className="mx-2 btn btn-primary"
-                  onClick={() => {
-                    dispatch(setBillTotal(subtotal));
-                    handleAddress();
-                  }}
-                >
-                  Proceed to Buy ({totalItemsInCart} items)
-                </button>
-              </div>
               <ul className="list-group">
                 {cartProducts && cartProducts.length > 0 ? (
                   cartProducts.map((product, index) => (
@@ -166,8 +154,8 @@ const Cart = () => {
                           </>
                         ) : (
                           <>{product.title}</>
-                        )}
-                        - ₹{product.price * product.quantity}
+                        )}{" "}
+                        - ₹{product.price}
                       </span>
                       <div className="d-flex justify-content-between mx-2">
                         <div
@@ -202,15 +190,23 @@ const Cart = () => {
                             type="text"
                             className="bg-white border-0 text-center"
                             style={{ width: "40px" }}
-                            value={Number(product.quantity)}
+                            value={product.quantity || ""}
                             onChange={(e) => {
-                              const newValue = parseInt(e.target.value);
-                              if (!isNaN(newValue) && newValue >= 1) {
-                                incrementQuantity();
-                                product.quantity = newValue;
+                              const newValue = e.target.value.trim(); // Trim leading/trailing whitespace
+                              if (
+                                newValue === "" ||
+                                (!isNaN(newValue) && parseInt(newValue) >= 1)
+                              ) {
+                                const newQuantity =
+                                  newValue === "" ? "" : parseInt(newValue);
+                                incrementQuantity(
+                                  product.cartItemId,
+                                  newQuantity
+                                ); // Pass the new quantity to the increment function
                               }
                             }}
                           />
+
                           <button
                             className="btn btn-light border rounded"
                             onClick={(e) => {
@@ -233,6 +229,9 @@ const Cart = () => {
                               />
                             </svg>
                           </button>
+                        </div>
+                        <div className="mx-2 mt-2">
+                          ₹{product.price * product.quantity}
                         </div>
                         <button
                           className="btn btn-primary mx-2"
@@ -260,6 +259,18 @@ const Cart = () => {
                   <li className="list-group-item">No items in cart</li>
                 )}
               </ul>
+              <div className="text-end mx-2 p-2">
+                <h3 className="mx-2">Sub-Total: ₹{subtotal}</h3>
+                <button
+                  className="mx-2 btn btn-primary"
+                  onClick={() => {
+                    dispatch(setBillTotal(subtotal));
+                    handleAddress();
+                  }}
+                >
+                  Proceed to Buy ({totalItemsInCart} items)
+                </button>
+              </div>
             </div>
           </div>
         </>

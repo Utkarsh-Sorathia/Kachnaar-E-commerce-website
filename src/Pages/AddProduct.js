@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { editProduct, removeProduct } from "../redux/userSlice";
 import firebase from "firebase/compat/app";
 import "firebase/compat/storage";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,10 +15,10 @@ function AddProduct({ onAddProduct }) {
   const [productImage, setProductImage] = useState(null);
   const admin = useSelector((state) => state.admin);
   const products = useSelector((state) => state.products);
-  const dispatch = useDispatch();
   const notify = () =>
     toast.warning("Please Fill all the details.", { autoClose: 1500 });
-  const notifyAdd = () => toast.success("New Product Added.");
+  const notifyAdd = () =>
+    toast.success("New Product Added.", { autoClose: 1500 });
   const db = firebase.firestore();
   const storage = firebase.storage();
 
@@ -75,43 +74,6 @@ function AddProduct({ onAddProduct }) {
     setProductImage(imageFile);
   };
 
-  const handleRemoveProduct = async (productId) => {
-    // Find the product in firestoreProducts array
-    const productToRemove = firestoreProducts.find(
-      (product) => product.id === productId
-    );
-    if (productToRemove) {
-      // Remove the product from the Redux state
-      dispatch(removeProduct({ id: productId }));
-      console.log("Removing product with ID:", productId);
-
-      // Remove product from Firestore
-      db.collection("productDataset")
-        .doc(productId)
-        .delete()
-        .then(async () => {
-          console.log("Product removed from Firestore:", productId);
-
-          // Remove image from Firebase Storage
-          try {
-            await firebase
-              .storage()
-              .refFromURL(productToRemove.imageUrl)
-              .delete();
-            console.log(
-              "Image removed from Storage:",
-              productToRemove.imageUrl
-            );
-          } catch (error) {
-            console.error("Error removing image from Storage:", error);
-          }
-        })
-        .catch((error) => {
-          console.error("Error removing product from Firestore: ", error);
-        });
-    }
-  };
-
   const handleEditProduct = (productId) => {
     const productToEdit = products.find((product) => product.id === productId);
     if (productToEdit) {
@@ -123,28 +85,43 @@ function AddProduct({ onAddProduct }) {
     }
   };
 
-  const handleSaveEditProduct = (e) => {
+  const handleSaveEditProduct = async (e) => {
     e.preventDefault();
 
     if (!productName || !productPrice || !productDescription) {
       notify();
       return;
     }
-    dispatch(
-      editProduct({
-        id: editingProductId,
-        name: productName,
-        price: parseFloat(productPrice),
-        description: productDescription,
-        imageUrl: productImage,
-      })
-    );
+
+    let updatedProduct = {
+      id: editingProductId,
+      name: productName,
+      price: parseFloat(productPrice),
+      description: productDescription,
+    };
+
+    // If productImage is not null, update imageUrl
+    if (productImage) {
+      try {
+        const imageRef = storage.ref().child(`product_images/${uuidv4()}`);
+        await imageRef.put(productImage);
+        const imageUrl = await imageRef.getDownloadURL();
+        updatedProduct = { ...updatedProduct, imageUrl };
+      } catch (error) {
+        console.error("Error uploading image to Storage: ", error);
+        return;
+      }
+    }
+
+    // Update product in Firestore
     db.collection("productDataset")
       .doc(editingProductId)
       .update({
-        name: productName,
-        price: parseFloat(productPrice),
-        description: productDescription,
+        name: updatedProduct.name,
+        price: updatedProduct.price,
+        description: updatedProduct.description,
+        // If productImage is not null, update imageUrl
+        ...(updatedProduct.imageUrl && { imageUrl: updatedProduct.imageUrl }),
       })
       .then(() => {
         console.log("Product updated in Firestore:", editingProductId);
@@ -152,6 +129,7 @@ function AddProduct({ onAddProduct }) {
       .catch((error) => {
         console.error("Error updating product in Firestore: ", error);
       });
+
     setEditingProductId(null);
     setProductName("");
     setProductPrice("");
@@ -236,12 +214,6 @@ function AddProduct({ onAddProduct }) {
                         onClick={() => handleEditProduct(product.id)}
                       >
                         Edit
-                      </button>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleRemoveProduct(product.id)}
-                      >
-                        Remove
                       </button>
                     </td>
                   </tr>
