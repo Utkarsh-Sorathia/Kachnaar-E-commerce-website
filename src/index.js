@@ -11,7 +11,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import Login from "./Pages/Login";
 import Welcome from "./Pages/Welcome";
 import ShoppingCart from "./Pages/Cart";
-import AdminHome from "./Pages/AdminHome";
 import Dashboard from "./Pages/Dashboard";
 import Profile from "./Pages/Profile";
 import ProductInfomation from "./Pages/ProductInfomation";
@@ -20,7 +19,6 @@ import SearchInformation from "./Pages/SearchInformation";
 import AddProduct from "./Pages/AddProduct";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-
 
 root.render(
   <Provider store={store}>
@@ -32,12 +30,11 @@ root.render(
           <Route path="/register" element={<Register />}></Route>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/search/:query" element={<SearchInformation />}></Route>
-          <Route path={'/products/:id'} element={<ProductInfomation />} />
+          <Route path={"/products/:id"} element={<ProductInfomation />} />
           <Route path="/address" element={<Address />}></Route>
           <Route path="/cart" element={<ShoppingCart />}></Route>
           <Route path="/admin/dashboard" element={<Dashboard />}></Route>
           <Route path="/admin/add" element={<AddProduct />}></Route>
-          <Route path="/admin/home" element={<AdminHome />}></Route>
           <Route path="/contact" element={<Contact />}></Route>
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />}></Route>

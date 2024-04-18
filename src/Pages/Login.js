@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginAdmin, loginUser } from "../redux/userSlice";
@@ -23,8 +23,6 @@ const Login = () => {
   const navigate = useNavigate();
   const notify = () => toast.success("Logged In Successfully");
   const notifyNot = () => toast.error("Invalid Username  or Password!");
-
-  const [isToastClosed, setIsToastClosed] = useState(true);
 
   const specificAdminId = "admin@gmail.com";
 
@@ -103,7 +101,8 @@ const Login = () => {
             const displayName = user.email;
             updateProfile(user, { displayName });
             dispatch(loginAdmin(res.user.email));
-            notify();
+            alert("Logged in as Admin!");
+            navigate("/admin/dashboard");
           } else {
             alert("You are not authorized to access the admin page.");
           }
@@ -111,7 +110,8 @@ const Login = () => {
           const displayName = user.email;
           updateProfile(user, { displayName });
           dispatch(loginUser(res.user.email));
-          notify();
+          alert("Logged in successfully.")
+          navigate("/home")
         }
       })
       .catch((error) => {
@@ -120,17 +120,10 @@ const Login = () => {
       });
   };
 
-  useEffect(() => {
-    if (!isToastClosed) {
-      setTimeout(() => {
-        setIsToastClosed(true);
-      }, 2000);
-    }
-  }, [isToastClosed]);
-
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <div className="container2 ">
         <div className="d-flex justify-content-center align-items-center vh-100">
           <div
@@ -171,22 +164,6 @@ const Login = () => {
                   <button type="submit" className="btn btn-primary btn-block">
                     Sign in
                   </button>
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={2000}
-                    onClose={() => {
-                      setIsToastClosed(true);
-                      if (isToastClosed) {
-                        setTimeout(() => {
-                          if (userType === "Admin") {
-                            navigate("/admin");
-                          } else {
-                            navigate("/home");
-                          }
-                        }, 500);
-                      }
-                    }}
-                  />
                   <br />
                   <br />
                   <Link to="/register">Don't have a account?</Link>
