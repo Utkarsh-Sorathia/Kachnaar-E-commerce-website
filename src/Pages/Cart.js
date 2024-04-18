@@ -141,7 +141,7 @@ const Cart = () => {
                         {product.name ? (
                           <>
                             <img
-                              className="mx-2 card-img-top border border-rounded"
+                              className="mx-2 card-img-top rounded"
                               src={product.imageUrl}
                               alt="Product"
                               style={{

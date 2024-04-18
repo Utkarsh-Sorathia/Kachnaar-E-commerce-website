@@ -89,7 +89,7 @@ const Dashboard = () => {
                           <h5 className="card-title">{product.name}</h5>
                           <p className="card-text">Price: ₹{product.price}</p>
                           <button
-                            className="btn btn-danger"
+                            className="btn btn-danger btn-sm"
                             onClick={() =>
                               handleRemoveProduct(product.id, product.name)
                             }

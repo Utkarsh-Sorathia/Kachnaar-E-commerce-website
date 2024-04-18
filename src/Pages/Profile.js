@@ -80,7 +80,7 @@ const Profile = () => {
         >
           <h1 className="text-center mt-2">Profile</h1>
           <div
-            className="container-sm border border-3 bg-white shadow rounded p-3 mt-3 mb-3"
+            className="container-sm border bg-white shadow-sm rounded p-3 mt-3 mb-3"
             style={{ maxWidth: "400px" }}
           >
             <div className="d-flex align-items-center">

@@ -5,6 +5,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/storage";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "./Navbar";
 
 function AddProduct({ onAddProduct }) {
   const [productName, setProductName] = useState("");
@@ -138,13 +139,18 @@ function AddProduct({ onAddProduct }) {
 
   return (
     <>
+      <Navbar />
       <ToastContainer />
       {admin ? (
         <>
-          <form className="form">
-            <div className="border p-2 container">
-              <div className="row">
-                <div className="col-md-6 offset-md-3 p-3">
+          <h2 className="mt-5 text-center">Add/Manage Products</h2>
+          <div
+            className="container mt-5 border rounded p-3"
+            style={{ minWidth: "700px" }}
+          >
+            <div className="row g-2">
+              <div className="col-lg-6 border rounded shadow-sm p-3">
+                <form>
                   <input
                     type="text"
                     className="form-control mb-3"
@@ -175,51 +181,52 @@ function AddProduct({ onAddProduct }) {
                     className="form-control mb-3"
                     required
                   />
-                </div>
-                <div className="d-flex justify-content-center">
-                  <button
-                    type="submit"
-                    className="btn btn-success mx-2"
-                    onClick={
-                      editingProductId
-                        ? handleSaveEditProduct
-                        : handleAddProduct
-                    }
-                  >
-                    {editingProductId ? "Save" : "Add Product"}
-                  </button>
+                  <div className="d-flex justify-content-center">
+                    <button
+                      type="submit"
+                      className="btn btn-success mx-2"
+                      onClick={
+                        editingProductId
+                          ? handleSaveEditProduct
+                          : handleAddProduct
+                      }
+                    >
+                      {editingProductId ? "Save" : "Add Product"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div className="col-lg-6 p-4">
+                <div className="table-responsive">
+                  <table className="table table-bordered">
+                    <thead className="table-dark">
+                      <tr>
+                        <th className="text-center">Name</th>
+                        <th className="text-center">Price</th>
+                        <th className="text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {firestoreProducts.map((product) => (
+                        <tr key={product.id}>
+                          <td>{product.name}</td>
+                          <td>₹{product.price}</td>
+                          <td>
+                            <button
+                              className="btn btn-primary mx-2"
+                              onClick={() => handleEditProduct(product.id)}
+                            >
+                              Edit
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </form>
-          <br />
-          <br />
-          <div className="table-responsive">
-            <table className="table table-bordered">
-              <thead className="thead-dark">
-                <tr>
-                  <th className="text-center">Name</th>
-                  <th className="text-center">Price</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {firestoreProducts.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>₹{product.price}</td>
-                    <td>
-                      <button
-                        className="btn btn-primary mx-2"
-                        onClick={() => handleEditProduct(product.id)}
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </>
       ) : (
