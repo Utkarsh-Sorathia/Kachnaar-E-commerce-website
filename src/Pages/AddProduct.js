@@ -53,7 +53,6 @@ function AddProduct({ onAddProduct }) {
       description: productDescription,
       imageUrl: imageUrl,
     };
-    onAddProduct(product);
     db.collection("productDataset")
       .doc(product.id)
       .set(product)

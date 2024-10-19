@@ -80,7 +80,7 @@ const Dashboard = () => {
                         <img
                           src={product.imageUrl}
                           alt="CoverPlant"
-                          style={{ height: "8rem", width: "8rem" }}
+                          style={{ height: "8rem", width: "8rem", objectFit: "cover"}}
                           className="rounded"
                         />
                       </div>
