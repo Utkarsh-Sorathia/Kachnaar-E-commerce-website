@@ -113,20 +113,23 @@ const ProductInfomation = () => {
     <>
       <Navbar />
       <ToastContainer />
-      <div className="container text-center m-3 border rounded bg-light p-2">
+      <div className="container text-center mt-3 mb-3 border rounded bg-light p-2 px-2">
         {product ? (
-          <div className="row align-items-center">
-            <div className="col-lg-6">
-              <ReactImageZoom
-                {...{
-                  img: product.imageUrl,
-                  width: 400,
-                  height: 400,
-                  zoomWidth: 1200,
-                }}
-              />
+          <div className="row align-items-center g-3">
+            <div className="col-12 col-md-6 d-flex justify-content-center">
+              <div className="w-100" style={{ maxWidth: "400px" }}>
+                <ReactImageZoom
+                  {...{
+                    img: product.imageUrl,
+                    width: 400,
+                    height: 400,
+                    zoomWidth: 1200,
+                    scale: 1,
+                  }}
+                />
+              </div>
             </div>
-            <div className="col-lg-6">
+            <div className="col-12 col-md-6">
               <div className="border rounded bg-white p-3">
                 <h1 className="border-bottom pb-3">{product.name}</h1>
                 <p className="text-muted mb-4">{product.description}</p>
@@ -146,16 +149,16 @@ const ProductInfomation = () => {
                   <input
                     type="text"
                     className="bg-white border-0 text-center"
-                    style={{ width: "40px" }}
+                    style={{ width: "60px" }}
                     value={quantity === null ? "" : quantity}
                     required
                     onChange={(e) => {
-                      const newValue = e.target.value.trim(); // Trim leading/trailing whitespace
+                      const newValue = e.target.value.trim();
                       if (
                         newValue === "" ||
                         (!isNaN(newValue) && parseInt(newValue) >= 1)
                       ) {
-                        setQuantity(newValue === "" ? "" : parseInt(newValue)); // Update the quantity state
+                        setQuantity(newValue === "" ? "" : parseInt(newValue));
                       }
                     }}
                   />
@@ -169,21 +172,23 @@ const ProductInfomation = () => {
                     +
                   </button>
                 </div>
-                <button
-                  className="btn btn-primary me-2"
-                  onClick={() => handleAddToCart(product, quantity)}
-                >
-                  Add to Cart
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={() => {
-                    dispatch(setBillTotal(quantity * product.price));
-                    navigate("/address");
-                  }}
-                >
-                  Buy Now
-                </button>
+                <div className="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleAddToCart(product, quantity)}
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => {
+                      dispatch(setBillTotal(quantity * product.price));
+                      navigate("/address");
+                    }}
+                  >
+                    Buy Now
+                  </button>
+                </div>
               </div>
             </div>
           </div>

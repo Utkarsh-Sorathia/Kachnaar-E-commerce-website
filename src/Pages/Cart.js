@@ -111,7 +111,7 @@ const Cart = () => {
   }, 0);
 
   const handleAddress = () => {
-    if (cartProducts == "") {
+    if (cartProducts === "" || cartProducts.length === 0) {
       EmptyCart();
     } else {
       navigate("/address");
@@ -124,7 +124,7 @@ const Cart = () => {
       <ToastContainer />
       {isAuthenticated ? (
         <>
-          <div className="container mt-5">
+          <div className="container mt-3 mt-md-5 px-2">
             <div className="cart-container">
               <h2 className="mb-4">My Cart</h2>
               <ul className="list-group">
@@ -133,153 +133,159 @@ const Cart = () => {
                     <li
                       key={index}
                       className={
-                        "list-group-item d-flex justify-content-between align-items-center" +
+                        "list-group-item" +
                         (index % 2 === 0 ? " bg-light" : "")
                       }
                     >
-                      <span>
-                        {product.name ? (
-                          <>
-                            <img
-                              className="mx-2 card-img-top rounded"
-                              src={product.imageUrl}
-                              alt="Product"
-                              style={{
-                                height: "50px",
-                                width: "50px",
-                                objectFit: "cover",
-                              }}
-                            />
-                            <strong>{product.name}</strong>
-                          </>
-                        ) : (
-                          <>{product.title}</>
-                        )}{" "}
-                        - ₹{product.price}
-                      </span>
-                      <div className="d-flex justify-content-between mx-2">
-                        <div
-                          className="border rounded mx-auto align-items-center p-0 bg-white"
-                          style={{ width: "135px" }}
-                        >
+                      <div className="row align-items-center g-2">
+                        <div className="col-12 col-md-4 d-flex align-items-center">
+                          {product.name ? (
+                            <>
+                              <img
+                                className="rounded me-2"
+                                src={product.imageUrl}
+                                alt="Product"
+                                style={{
+                                  height: "60px",
+                                  width: "60px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                              <div>
+                                <strong className="d-block">{product.name}</strong>
+                                <small>₹{product.price}</small>
+                              </div>
+                            </>
+                          ) : (
+                            <>{product.title}</>
+                          )}
+                        </div>
+                        <div className="col-12 col-md-3">
+                          <div className="d-flex align-items-center justify-content-center">
+                            <div
+                              className="border rounded d-flex align-items-center bg-white"
+                              style={{ width: "120px" }}
+                            >
+                              <button
+                                className="btn btn-light border-0 rounded-start"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (product.quantity > 1) {
+                                    decrementQuantity(product.cartItemId);
+                                  }
+                                }}
+                                style={{ minWidth: "35px" }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  className="text-danger"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"
+                                  />
+                                </svg>
+                              </button>
+                              <input
+                                type="text"
+                                className="bg-white border-0 text-center"
+                                style={{ width: "40px", height: "35px" }}
+                                value={product.quantity || ""}
+                                onChange={(e) => {
+                                  const newValue = e.target.value.trim();
+                                  if (
+                                    newValue === "" ||
+                                    (!isNaN(newValue) && parseInt(newValue) >= 1)
+                                  ) {
+                                    const newQuantity =
+                                      newValue === "" ? "" : parseInt(newValue);
+                                    incrementQuantity(
+                                      product.cartItemId,
+                                      newQuantity
+                                    );
+                                  }
+                                }}
+                              />
+                              <button
+                                className="btn btn-light border-0 rounded-end"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  incrementQuantity(product.cartItemId);
+                                }}
+                                style={{ minWidth: "35px" }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  className="text-success"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-2 text-center text-md-start">
+                          <strong>₹{product.price * product.quantity}</strong>
+                        </div>
+                        <div className="col-12 col-md-3 d-flex gap-2 justify-content-center justify-content-md-end">
                           <button
-                            className="btn btn-light border rounded"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (product.quantity > 1) {
-                                decrementQuantity();
-                                product.quantity = Number(product.quantity) - 1;
-                              }
+                            className="btn btn-primary btn-sm"
+                            onClick={() => {
+                              dispatch(
+                                setBillTotal(product.price * product.quantity)
+                              );
+                              navigate("/address");
                             }}
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fillRule="currentColor"
-                              className="text-danger bi bi-dash-lg"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"
-                              />
-                            </svg>
+                            Buy Now
                           </button>
-                          <input
-                            type="text"
-                            className="bg-white border-0 text-center"
-                            style={{ width: "40px" }}
-                            value={product.quantity || ""}
-                            onChange={(e) => {
-                              const newValue = e.target.value.trim(); // Trim leading/trailing whitespace
-                              if (
-                                newValue === "" ||
-                                (!isNaN(newValue) && parseInt(newValue) >= 1)
-                              ) {
-                                const newQuantity =
-                                  newValue === "" ? "" : parseInt(newValue);
-                                incrementQuantity(
-                                  product.cartItemId,
-                                  newQuantity
-                                ); // Pass the new quantity to the increment function
-                              }
-                            }}
-                          />
-
                           <button
-                            className="btn btn-light border rounded"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              incrementQuantity();
-                              product.quantity = Number(product.quantity) + 1;
-                            }}
+                            className="btn btn-danger btn-sm"
+                            onClick={() =>
+                              handleRemoveFromCart(product.cartItemId)
+                            }
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fillRule="currentColor"
-                              className="bi bi-plus-lg"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
-                              />
-                            </svg>
+                            Remove
                           </button>
                         </div>
-                        <div className="mx-2 mt-2">
-                          ₹{product.price * product.quantity}
-                        </div>
-                        <button
-                          className="btn btn-primary mx-2"
-                          onClick={() => {
-                            dispatch(
-                              setBillTotal(product.price * product.quantity)
-                            );
-                            navigate("/address");
-                          }}
-                        >
-                          Buy Now
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() =>
-                            handleRemoveFromCart(product.cartItemId)
-                          }
-                        >
-                          Remove
-                        </button>
                       </div>
                     </li>
                   ))
                 ) : (
-                  <li className="list-group-item">No items in cart</li>
+                  <li className="list-group-item text-center py-4">No items in cart</li>
                 )}
               </ul>
-              <div className="text-end mx-2 p-2">
-                <h3 className="mx-2">Sub-Total: ₹{subtotal}</h3>
-                <button
-                  className="mx-2 btn btn-primary"
-                  onClick={() => {
-                    dispatch(setBillTotal(subtotal));
-                    handleAddress();
-                  }}
-                >
-                  Proceed to Buy ({totalItemsInCart} items)
-                </button>
+              <div className="mt-3 p-2 border-top">
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                  <h4 className="mb-0">Sub-Total: ₹{subtotal}</h4>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      dispatch(setBillTotal(subtotal));
+                      handleAddress();
+                    }}
+                  >
+                    Proceed to Buy ({totalItemsInCart} items)
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </>
       ) : (
         <>
-          <div
-            className="container bg-light mt-3 p-3 text-center"
-            style={{ width: "630px" }}
-          >
+          <div className="container bg-light mt-3 p-3 text-center">
             <h1>
               <Link to="/login">Login</Link> to get access to this page.
             </h1>

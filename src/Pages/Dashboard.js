@@ -69,24 +69,24 @@ const Dashboard = () => {
       {admin ? (
         <>
           <Navbar />
-          <div className="container">
+          <div className="container mt-3 mt-md-4 px-2">
             <h1 className="text-center my-4">Dashboard</h1>
-            <div className="row">
+            <div className="row g-3">
               {firestoreProducts.map((product) => (
-                <div className="col-md-4 mb-4" key={product.id}>
-                  <div className="card">
-                    <div className="row">
-                      <div className="col-lg-4">
+                <div className="col-12 col-md-6 col-lg-4 mb-3" key={product.id}>
+                  <div className="card h-100">
+                    <div className="row g-0">
+                      <div className="col-4 col-lg-4 d-flex align-items-center justify-content-center p-2">
                         <img
                           src={product.imageUrl}
                           alt="CoverPlant"
-                          style={{ height: "8rem", width: "8rem", objectFit: "cover"}}
+                          style={{ height: "100%", width: "100%", maxHeight: "120px", objectFit: "cover"}}
                           className="rounded"
                         />
                       </div>
-                      <div className="col-lg-8">
-                        <div className=" mx-2 card-body">
-                          <h5 className="card-title">{product.name}</h5>
+                      <div className="col-8 col-lg-8">
+                        <div className="card-body">
+                          <h5 className="card-title h6">{product.name}</h5>
                           <p className="card-text">Price: ₹{product.price}</p>
                           <button
                             className="btn btn-danger btn-sm"

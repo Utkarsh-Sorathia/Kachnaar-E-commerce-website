@@ -44,48 +44,51 @@ const Contact = () => {
     <>
       <Navbar />
       <ToastContainer />
-      <div
-        className="container border mt-3 shadow"
-        style={{ height: "500px", width: "500px", borderRadius: "10px" }}
-      >
-        <form className="form-control border-0" onSubmit={handleSubmit}>
-          <h1 className="text-center mt-2">Contact Form</h1>
-          <div className="form-outline p-3">
-            <input
-              type="text"
-              className="form-control form-control-lg"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-outline p-3">
-            <input
-              type="email"
-              className="form-control form-control-lg"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+      <div className="container d-flex justify-content-center align-items-center min-vh-50 py-4 px-2">
+        <div
+          className="border shadow rounded bg-white"
+          style={{ width: "100%", maxWidth: "500px", borderRadius: "10px" }}
+        >
+          <form className="p-3 p-md-4" onSubmit={handleSubmit}>
+            <h1 className="text-center mt-2">Contact Form</h1>
+            <div className="form-outline mb-3">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-outline mb-3">
+              <input
+                type="email"
+                className="form-control form-control-lg"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="form-outline p-3">
-            <textarea
-              placeholder="Message..."
-              className="form-control form-control-lg"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-outline p-3 text-center">
-            <button type="submit" className="btn btn-primary">
-              Send Message
-            </button>
-          </div>
-        </form>
+            <div className="form-outline mb-3">
+              <textarea
+                placeholder="Message..."
+                className="form-control form-control-lg"
+                rows="5"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-outline text-center">
+              <button type="submit" className="btn btn-primary w-100">
+                Send Message
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

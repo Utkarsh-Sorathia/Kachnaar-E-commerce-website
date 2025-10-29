@@ -113,13 +113,10 @@ const Register = () => {
   return (
     <>
       <Navbar />
-      <div className="container2 d-flex justify-content-center align-items-center p-5 vh-200">
-        <div
-          className="container py-3 text-center border rounded"
-          style={{ maxWidth: "450px" }}
-        >
+      <div className="container2 d-flex justify-content-center align-items-center min-vh-100 py-4">
+        <div className="container py-3 text-center border rounded bg-white mx-2" style={{ maxWidth: "450px" }}>
           <div className="row justify-content-center">
-            <div className="col-md-10">
+            <div className="col-12 col-md-10">
               <h2 className="text-center mb-2">Register</h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-outline mb-2">
@@ -197,20 +194,17 @@ const Register = () => {
                   <h5>
                     <u>OR</u>
                   </h5>
-                  <Link>
-                    <img
-                      className="img mx-3"
-                      src={logo}
-                      alt="google"
-                      onClick={Googleuser}
-                    />
-                  </Link>
-                  <Link>
-                    <img className="img mx-3" src={logo1} alt="Github" />
-                  </Link>
-                  <Link>
-                    <img className="img mx-3" src={logo2} alt="facebook" />
-                  </Link>
+                  <div className="d-flex justify-content-center flex-wrap gap-2">
+                    <button type="button" className="btn btn-link p-0 border-0" onClick={Googleuser}>
+                      <img className="img" src={logo} alt="google" />
+                    </button>
+                    <button type="button" className="btn btn-link p-0 border-0">
+                      <img className="img" src={logo1} alt="Github" />
+                    </button>
+                    <button type="button" className="btn btn-link p-0 border-0">
+                      <img className="img" src={logo2} alt="facebook" />
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>

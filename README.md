@@ -1,70 +1,100 @@
-# Getting Started with Create React App
+# Kachnar E-commerce Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, responsive e-commerce platform for plant sales built with React.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- 🛒 Product browsing and search
+- 🛍️ Shopping cart functionality
+- 👤 User authentication (Login/Register)
+- 👨‍💼 Admin dashboard for product management
+- 💳 Razorpay payment integration
+- 📱 Fully responsive design
+- 🔍 Plant search with plant identification API
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend:** React, Bootstrap 5
+- **State Management:** Redux Toolkit
+- **Database:** Firebase Firestore
+- **Authentication:** Firebase Auth
+- **Payment:** Razorpay
+- **Styling:** Bootstrap, CSS
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (v14 or higher)
+- npm or yarn
+- Firebase project setup
+- Razorpay account (for payments)
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd Kachnaar-E-commerce-website
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Set up environment variables
+Create a `.env` file in the root directory:
+```
+REACT_APP_RAZORPAY_KEY=your_razorpay_key
+REACT_APP_SERVICE=your_emailjs_service_id
+REACT_APP_TEMPLATE=your_emailjs_template_id
+REACT_APP_PUBLIC=your_emailjs_public_key
+```
 
-### `npm run eject`
+4. Configure Firebase
+Update `src/Firebase.js` with your Firebase configuration.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Running the App
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Start the development server:
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Build for Production
 
-## Learn More
+```bash
+npm run build
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Project Structure
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+src/
+├── Pages/          # All page components
+├── redux/          # Redux store and slices
+├── Firebase.js     # Firebase configuration
+└── index.js        # App entry point
+```
 
-### Code Splitting
+## Admin Access
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Admin email: `admin@gmail.com`
+- Login as Admin in the login page to access the dashboard
 
-### Analyzing the Bundle Size
+## Features Overview
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **Home:** Browse all products with search and sort functionality
+- **Product Details:** View detailed product information with image zoom
+- **Cart:** Add to cart, manage quantities, and proceed to checkout
+- **Profile:** Update user profile information
+- **Admin Dashboard:** Add, edit, and manage products
+- **Search:** Search for plants using plant identification API
+- **Contact:** Send messages via EmailJS
 
-### Making a Progressive Web App
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is private.

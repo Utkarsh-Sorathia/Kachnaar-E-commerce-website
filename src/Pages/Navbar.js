@@ -16,13 +16,13 @@ const UserNavbar = ({
   query,
   navigate,
 }) => (
-  <nav className="navbar navbar-exand-lg navbar-dark bg-dark">
-    <div className="d-flex">
-      <Link to="/">
+  <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div className="container-fluid">
+      <Link to="/" className="navbar-brand">
         <img
-          className="mx-3"
+          className="me-2"
           src={Logo}
-          alt="egg"
+          alt="logo"
           height="45"
           width="45"
           style={{
@@ -32,38 +32,39 @@ const UserNavbar = ({
           }}
         />
       </Link>
-      <Link
-        className="navbar-brand text-light mx-3"
-        data-toggle="tooltip"
-        data-placement="bottom"
-        title="Home"
-        to="/home"
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
       >
-        Home
-      </Link>
-      <Link
-        className="navbar-brand text-light mx-3"
-        to="/contact"
-        data-toggle="tooltip"
-        data-placement="bottom"
-        title="Contact"
-      >
-        Contact Us
-      </Link>
-      <Link
-        className="navbar-brand text-light mx-3"
-        to="/about"
-        data-toggle="tooltip"
-        data-placement="bottom"
-        title="About"
-      >
-        About Us
-      </Link>
-      <div className="search-box">
-        <form className="d-flex mx-5" onSubmit={handleSubmit}>
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <li className="nav-item">
+            <Link className="nav-link" to="/home">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/contact">
+              Contact Us
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/about">
+              About Us
+            </Link>
+          </li>
+        </ul>
+        <form className="d-flex mx-2 mb-2 mb-lg-0" onSubmit={handleSubmit}>
           <input
             type="text"
-            className="form-control  me-2"
+            className="form-control me-2"
             placeholder="Search Plant Here..."
             style={{ height: "30px" }}
             value={query}
@@ -71,9 +72,6 @@ const UserNavbar = ({
             required
           />
           <button
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title="Search"
             type="submit"
             className="btn btn-sm btn-primary"
             onClick={() => navigate(`/search/${query}`)}
@@ -81,66 +79,80 @@ const UserNavbar = ({
             Search
           </button>
         </form>
+        <div className="d-flex align-items-center gap-2">
+          <Link className="position-relative me-2" to="/cart">
+            <img src={Cart} alt="cart" height="30" width="35" />
+            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark">
+              {cartItems}
+              <span className="visually-hidden">unread messages</span>
+            </span>
+          </Link>
+          <div className="dropdown">
+            <button
+              className="btn btn-link text-light text-decoration-none dropdown-toggle p-2"
+              type="button"
+              id="userDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style={{
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(255,255,255,0.2)"
+              }}
+            >
+              <i className="fa-solid fa-user"></i>
+            </button>
+            <ul 
+              className="dropdown-menu dropdown-menu-end shadow" 
+              aria-labelledby="userDropdown"
+              style={{ minWidth: "200px", marginTop: "8px" }}
+            >
+              <li>
+                {user ? (
+                  <Link to="/profile" className="text-decoration-none">
+                    <span className="dropdown-item py-2">
+                      <i className="fa-solid fa-user me-2"></i>
+                      Hi, {user}
+                    </span>
+                  </Link>
+                ) : (
+                  <span className="dropdown-item py-2">
+                    <i className="fa-solid fa-user-shield me-2"></i>
+                    Hi, admin
+                  </span>
+                )}
+              </li>
+              <li><hr className="dropdown-divider my-1" /></li>
+              <li>
+                <button 
+                  className="dropdown-item py-2" 
+                  onClick={handleLogout}
+                  style={{ cursor: "pointer" }}
+                >
+                  <i className="fa-solid fa-right-from-bracket me-2"></i>
+                  Log out
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-    </div>
-    <div className="navbar-brand text-light mx-3"></div>
-    <div className="mx-5 dropdown text-end">
-      <Link className="navbar-brand mx-4" to="/cart">
-        <img src={Cart} alt="cart" height="30" width="35" />
-        <span className="h-75 position-absolute top-2 start-95 translate-middle badge rounded-pill bg-light text-dark">
-          {cartItems}
-          <span className="visually-hidden">unread messages</span>
-        </span>
-      </Link>
-      <a
-        href="#"
-        className="link-light dropdown-toggle"
-        role="button"
-        id="userDropdown"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <i
-          className="fa-solid fa-user rounded-circle"
-          width="40"
-          height="40"
-        ></i>
-      </a>
-      <ul
-        className="dropdown-menu dropdown-menu-end text-small"
-        aria-labelledby="userDropdown"
-      >
-        <li>
-          {user ? (
-            <Link to="/profile" className="text-decoration-none">
-              <p className="dropdown-item">Hi, {user}!</p>
-            </Link>
-          ) : (
-            <p className="dropdown-item">Hi, admin!</p>
-          )}
-        </li>
-        <li>
-          <hr className="dropdown-divider" />
-        </li>
-        <li>
-          <button className="dropdown-item" onClick={handleLogout}>
-            Log out
-          </button>
-        </li>
-      </ul>
     </div>
   </nav>
 );
 
 const AdminNavbar = ({ handleLogout, admin }) => (
-  <nav className="navbar navbar-exand-lg navbar-dark bg-dark">
-    <div>
-      <Link to="/admin/dashboard">
+  <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div className="container-fluid">
+      <Link to="/admin/dashboard" className="navbar-brand">
         <img
-          className="google-image mx-3"
+          className="me-2"
           src={Logo}
-          alt="egg"
+          alt="logo"
           height="45"
           width="45"
           style={{
@@ -150,45 +162,74 @@ const AdminNavbar = ({ handleLogout, admin }) => (
           }}
         />
       </Link>
-      <Link className="navbar-brand text-light mx-3" to="/admin/dashboard">
-        Dashboard
-      </Link>
-      <Link className="navbar-brand text-light mx-3" to="/admin/add">
-        Add Product
-      </Link>
-    </div>
-    <div className="mx-3 dropdown text-end">
-      <a
-        href="#"
-        className="link-light dropdown-toggle"
-        role="button"
-        id="userDropdown"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
         aria-expanded="false"
+        aria-label="Toggle navigation"
       >
-        <i
-          className="fa-solid fa-user rounded-circle"
-          width="40"
-          height="40"
-        ></i>
-      </a>
-      <ul
-        className="dropdown-menu dropdown-menu-end text-small"
-        aria-labelledby="userDropdown"
-      >
-        <li>
-          <p className="dropdown-item">Hi, {admin}!</p>
-        </li>
-        <li>
-          <hr className="dropdown-divider" />
-        </li>
-        <li>
-          <button className="dropdown-item" onClick={handleLogout}>
-            Log out
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <li className="nav-item">
+            <Link className="nav-link" to="/admin/dashboard">
+              Dashboard
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/admin/add">
+              Add Product
+            </Link>
+          </li>
+        </ul>
+        <div className="dropdown">
+          <button
+            className="btn btn-link text-light text-decoration-none dropdown-toggle p-2"
+            type="button"
+            id="adminDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style={{
+              borderRadius: "50%",
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(255,255,255,0.2)"
+            }}
+          >
+            <i className="fa-solid fa-user-shield"></i>
           </button>
-        </li>
-      </ul>
+          <ul 
+            className="dropdown-menu dropdown-menu-end shadow" 
+            aria-labelledby="adminDropdown"
+            style={{ minWidth: "200px", marginTop: "8px" }}
+          >
+            <li>
+              <span className="dropdown-item py-2">
+                <i className="fa-solid fa-user-shield me-2"></i>
+                Hi, {admin}
+              </span>
+            </li>
+            <li><hr className="dropdown-divider my-1" /></li>
+            <li>
+              <button 
+                className="dropdown-item py-2" 
+                onClick={handleLogout}
+                style={{ cursor: "pointer" }}
+              >
+                <i className="fa-solid fa-right-from-bracket me-2"></i>
+                Log out
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </nav>
 );
@@ -266,13 +307,13 @@ const Navbar = () => {
     }
   } else {
     return (
-      <nav className="navbar navbar-dark bg-dark py-1">
-        <div className="d-flex justify-content-between mx-3">
-          <Link onClick={handleHome}>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container-fluid">
+          <Link to="/" className="navbar-brand" onClick={handleHome}>
             <img
-              className="google-image mx-3"
+              className="me-2"
               src={Logo}
-              alt="egg"
+              alt="logo"
               height="45"
               width="45"
               style={{
@@ -282,42 +323,61 @@ const Navbar = () => {
               }}
             />
           </Link>
-          <Link to="/home" className="navbar-brand text-light mx-3">
-            Home
-          </Link>
-          <Link to="/contact" className="navbar-brand text-light mx-3">
-            Contact Us
-          </Link>
-          <Link to="/about" className="navbar-brand text-light mx-3">
-            About Us
-          </Link>
-        </div>
-        <div>
-          <form className="d-flex" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="form-control mx-2"
-              placeholder="Search Plant Here..."
-              style={{ height: "30px" }}
-              value={query}
-              onChange={handleChange}
-            />
-            <button
-              type="submit"
-              className="btn btn-sm btn-primary"
-              onClick={() => navigate(`/search/${query}`)}
-            >
-              Search
-            </button>
-          </form>
-        </div>
-        <div className="d-flex justify-content-end">
-          <Link to="/login" className="btn btn-primary mx-2">
-            Login
-          </Link>
-          <Link to="/register" className="btn btn-primary mx-2">
-            Register
-          </Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <Link className="nav-link" to="/home">
+                  Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/contact">
+                  Contact Us
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/about">
+                  About Us
+                </Link>
+              </li>
+            </ul>
+            <form className="d-flex mx-2 mb-2 mb-lg-0" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                className="form-control me-2"
+                placeholder="Search Plant Here..."
+                style={{ height: "30px" }}
+                value={query}
+                onChange={handleChange}
+              />
+              <button
+                type="submit"
+                className="btn btn-sm btn-primary"
+                onClick={() => navigate(`/search/${query}`)}
+              >
+                Search
+              </button>
+            </form>
+            <div className="d-flex">
+              <Link to="/login" className="btn btn-primary me-2">
+                Login
+              </Link>
+              <Link to="/register" className="btn btn-primary">
+                Register
+              </Link>
+            </div>
+          </div>
         </div>
       </nav>
     );

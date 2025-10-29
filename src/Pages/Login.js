@@ -124,14 +124,11 @@ const Login = () => {
     <>
       <Navbar />
       <ToastContainer />
-      <div className="container2 ">
-        <div className="d-flex justify-content-center align-items-center vh-100">
-          <div
-            className="container py-3 text-center border rounded"
-            style={{ maxWidth: "500px" }}
-          >
+      <div className="container2">
+        <div className="d-flex justify-content-center align-items-center min-vh-100 py-4">
+          <div className="container py-3 text-center border rounded bg-white mx-2" style={{ maxWidth: "500px" }}>
             <div className="row justify-content-center">
-              <div className="col-md-8 col-lg-7 col-xl-6">
+              <div className="col-12 col-md-10">
                 <h2 className="text-center mb-4">Login</h2>
                 <form onSubmit={(e) => handleSubmit(e)}>
                   <div className="form-outline mb-2">
@@ -169,36 +166,34 @@ const Login = () => {
                   <Link to="/register">Don't have a account?</Link>
                   <br />
                   <br />
-                  <p>
-                    Login as:
+                  <div className="mb-3">
+                    <label className="form-label me-2">Login as:</label>
                     <select
+                      className="form-select d-inline-block"
+                      style={{ width: "auto", minWidth: "120px" }}
                       value={userType}
                       onChange={(e) => setUserType(e.target.value)}
                     >
                       <option value="User">User</option>
                       <option value="Admin">Admin</option>
                     </select>
-                  </p>
+                  </div>
                 </form>
                 <div className="text-center">
                   <h5>
                     <u>OR</u>
                   </h5>
-                  <br />
-                  <Link>
-                    <img
-                      className="img mx-3"
-                      src={logo}
-                      alt="google"
-                      onClick={Googleuser}
-                    />
-                  </Link>
-                  <Link>
-                    <img className="img mx-3" src={logo1} alt="Github" />
-                  </Link>
-                  <Link>
-                    <img className="img mx-3" src={logo2} alt="facebook" />
-                  </Link>
+                  <div className="d-flex justify-content-center flex-wrap gap-2">
+                    <button type="button" className="btn btn-link p-0 border-0" onClick={Googleuser}>
+                      <img className="img" src={logo} alt="google" />
+                    </button>
+                    <button type="button" className="btn btn-link p-0 border-0">
+                      <img className="img" src={logo1} alt="Github" />
+                    </button>
+                    <button type="button" className="btn btn-link p-0 border-0">
+                      <img className="img" src={logo2} alt="facebook" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

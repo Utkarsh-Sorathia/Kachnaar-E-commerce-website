@@ -50,11 +50,11 @@ const Address = () => {
       <Navbar />
       {isAuthenticated && user ? (
         <>
-          <div className="container mt-5">
+          <div className="container mt-3 mt-md-5 px-2">
             <div className="row justify-content-center">
-              <div className="col-md-6">
+              <div className="col-12 col-md-8 col-lg-6">
                 <div className="card shadow">
-                  <div className="card-body">
+                  <div className="card-body p-3 p-md-4">
                     <h2 className="text-center mb-4">Address Details</h2>
                     <form>
                       <div className="form-group mb-2">
@@ -81,16 +81,17 @@ const Address = () => {
                           required
                         />
                       </div>
-                      <div className="form-row mb-2">
-                        <div className="form-group col-md-6 mb-2">
+                      <div className="row mb-2">
+                        <div className="form-group col-12 col-md-6 mb-2">
                           <select className="form-control" required>
-                            <option value="" disabled selected>
-                              City
+                            <option value="" disabled>
+                              State
                             </option>
-                            <option>Surat</option>
+                            <option>Gujarat</option>
+                            <option>Maharashtra</option>
                           </select>
                         </div>
-                        <div className="form-group col-md-6 mb-2">
+                        <div className="form-group col-12 col-md-6 mb-2">
                           <input
                             type="text"
                             className="form-control"
@@ -99,7 +100,7 @@ const Address = () => {
                           />
                         </div>
                       </div>
-                      <div className="form-group form-check  mb-2">
+                      <div className="form-group form-check mb-3">
                         <input
                           className="form-check-input"
                           type="checkbox"
@@ -107,12 +108,12 @@ const Address = () => {
                           required
                         />
                         <label className="form-check-label" htmlFor="gridCheck">
-                          Check me out
+                          I agree to the terms and conditions
                         </label>
                       </div>
                       <button
                         type="submit"
-                        className="btn btn-primary btn-block"
+                        className="btn btn-primary w-100 mb-2"
                         onClick={handleBuy}
                         disabled={paymentLoading}
                       >
@@ -120,7 +121,7 @@ const Address = () => {
                       </button>
                       <button
                         type="button"
-                        className="btn btn-link btn-block"
+                        className="btn btn-link w-100"
                         onClick={() => navigate("/cart")}
                       >
                         Back to Cart
@@ -134,9 +135,9 @@ const Address = () => {
         </>
       ) : (
         <>
-          <div className="container mt-5">
+          <div className="container mt-3 mt-md-5 px-2">
             <div className="row justify-content-center">
-              <div className="col-md-6">
+              <div className="col-12 col-md-8 col-lg-6">
                 <div className="card">
                   <div className="card-body">
                     <h2 className="text-center">

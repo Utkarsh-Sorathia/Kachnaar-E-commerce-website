@@ -11,7 +11,7 @@ const PlantSearch = () => {
 
   useEffect(() => {
     fetchData();
-  }, [query]);
+  }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchData = async () => {
     if (query.trim() !== "") {
@@ -54,11 +54,11 @@ const PlantSearch = () => {
   return (
     <>
       <Navbar />
-      <div className="container mt-3">
+      <div className="container mt-3 px-2">
         {plants.length > 0 && (
-          <div className="row">
+          <div className="row g-3">
             {plants.map((plant, index) => (
-              <div key={index} className="col-md-4 mb-3">
+              <div key={index} className="col-12 col-sm-6 col-md-4">
                 <div
                   className="card h-100 shadow"
                   onClick={() => handlePlantClick(plant.access_token)}
@@ -74,17 +74,17 @@ const PlantSearch = () => {
           </div>
         )}
         {selectedPlant && (
-          <div className="card mt-3 shadow mb-3" style={{ maxWidth: "200rem" }}>
+          <div className="card mt-3 shadow mb-3">
             <div className="row g-0">
-              <div className="col-md-4">
+              <div className="col-12 col-md-4 d-flex justify-content-center align-items-start p-3">
                 <img
                   src={selectedPlant.image.value}
                   alt="Plant"
-                  className="img-fluid"
-                  style={{ maxHeight: "400px", maxWidth: "350px",borderRadius:"10px" }}
+                  className="img-fluid rounded"
+                  style={{ maxHeight: "300px", maxWidth: "100%", objectFit: "cover" }}
                 />
               </div>
-              <div className="col-md-8">
+              <div className="col-12 col-md-8">
                 <div className="card-body">
                   <h2 className="card-title">Plant Details</h2>
                   {selectedPlant.common_names && (
@@ -123,6 +123,7 @@ const PlantSearch = () => {
                         href={selectedPlant.description.citation}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="text-break"
                       >
                         {selectedPlant.description.citation}
                       </a>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
@@ -27,7 +27,7 @@ const Welcome = () => {
       <Navbar />
       <div
         id="carouselExampleSlidesOnly"
-        className="carousel slide p-3" // Apply padding
+        className="carousel slide p-2 p-md-3"
         data-bs-ride="carousel"
         style={{ backgroundColor: "beige" }}
       >
@@ -40,16 +40,16 @@ const Welcome = () => {
                   className={`carousel-item ${index === 0 ? "active" : ""}`}
                   key={index}
                 >
-                  <div className="row">
+                  <div className="row g-2">
                     {slides.map((product, idx) => (
-                      <div className="col" key={idx}>
+                      <div className="col-6 col-md-3" key={idx}>
                         <Link to={`/products/${product.id}`}>
                           <img
                             src={product.imageUrl}
                             className="d-block w-100"
                             alt={`Slide ${index + idx}`}
                             style={{
-                              height: "300px",
+                              height: "200px",
                               objectFit: "cover",
                               borderRadius: "10px",
                             }}

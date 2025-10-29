@@ -22,21 +22,23 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    db.collection("users")
-      .where("email", "==", user)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          setUserId(doc.data().userId);
-          setName(doc.data().name);
-          setEmail(doc.data().email);
-          setPassword(doc.data().password);
+    if (user) {
+      db.collection("users")
+        .where("email", "==", user)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            setUserId(doc.data().userId);
+            setName(doc.data().name);
+            setEmail(doc.data().email);
+            setPassword(doc.data().password);
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
         });
-      })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
-  }, []);
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -73,16 +75,10 @@ const Profile = () => {
   return (
     <>
       <Navbar />
-      <div className="p-3">
-        <div
-          className="container border rounded mt-3"
-          style={{ maxWidth: "700px" }}
-        >
+      <div className="p-2 p-md-3">
+        <div className="container border rounded mt-3 mx-auto" style={{ maxWidth: "700px" }}>
           <h1 className="text-center mt-2">Profile</h1>
-          <div
-            className="container-sm border bg-white shadow-sm rounded p-3 mt-3 mb-3"
-            style={{ maxWidth: "400px" }}
-          >
+          <div className="container-sm border bg-white shadow-sm rounded p-3 mt-3 mb-3 mx-auto" style={{ maxWidth: "400px" }}>
             <div className="d-flex align-items-center">
               <div className="mb-2">
                 <Avatar
@@ -100,13 +96,13 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="p-2">
             <form onSubmit={onSubmit}>
               <div className="form-group row m-1">
-                <label htmlFor="inputName" className="col-sm-2 col-form-label">
+                <label htmlFor="inputName" className="col-12 col-sm-2 col-form-label">
                   Name :
                 </label>
-                <div className="col-sm-6">
+                <div className="col-12 col-sm-10">
                   <input
                     type="text"
                     value={name}
@@ -122,10 +118,10 @@ const Profile = () => {
               </div>
 
               <div className="form-group row m-1">
-                <label htmlFor="inputEmail" className="col-sm-2 col-form-label">
+                <label htmlFor="inputEmail" className="col-12 col-sm-2 col-form-label">
                   Email :
                 </label>
-                <div className="col-sm-6">
+                <div className="col-12 col-sm-10">
                   <input
                     type="email"
                     value={email}
@@ -143,11 +139,11 @@ const Profile = () => {
               <div className="form-group row m-1">
                 <label
                   htmlFor="inputPassword"
-                  className="col-sm-2 col-form-label"
+                  className="col-12 col-sm-2 col-form-label"
                 >
                   Password :
                 </label>
-                <div className="col-sm-6 position-relative">
+                <div className="col-12 col-sm-10 position-relative">
                   <input
                     type={type}
                     value={password}
@@ -171,9 +167,11 @@ const Profile = () => {
               <div className="form-group row m-1">
                 <label
                   htmlFor="inputConfirmPassword"
-                  className="col-sm-2 col-form-label"
-                ></label>
-                <div className="col-sm-6">
+                  className="col-12 col-sm-2 col-form-label"
+                >
+                  Confirm Password :
+                </label>
+                <div className="col-12 col-sm-10">
                   <input
                     type="password"
                     value={confirm_password}
@@ -189,7 +187,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group row mt-3 text-center mb-2">
-                <div className="col-sm-10 ">
+                <div className="col-12">
                   <button type="submit" className="btn btn-success">
                     Update
                   </button>

@@ -142,13 +142,10 @@ function AddProduct({ onAddProduct }) {
       <ToastContainer />
       {admin ? (
         <>
-          <h2 className="mt-5 text-center">Add/Manage Products</h2>
-          <div
-            className="container mt-5 border rounded p-3"
-            style={{ minWidth: "700px" }}
-          >
-            <div className="row g-2">
-              <div className="col-lg-6 border rounded shadow-sm p-3">
+          <h2 className="mt-3 mt-md-5 text-center">Add/Manage Products</h2>
+          <div className="container mt-3 mt-md-5 border rounded p-3 px-2">
+            <div className="row g-3">
+              <div className="col-12 col-lg-6 border rounded shadow-sm p-3">
                 <form>
                   <input
                     type="text"
@@ -169,6 +166,7 @@ function AddProduct({ onAddProduct }) {
                   <textarea
                     className="form-control mb-3"
                     placeholder="Product Description"
+                    rows="4"
                     value={productDescription}
                     onChange={(e) => setProductDescription(e.target.value)}
                     required
@@ -183,7 +181,7 @@ function AddProduct({ onAddProduct }) {
                   <div className="d-flex justify-content-center">
                     <button
                       type="submit"
-                      className="btn btn-success mx-2"
+                      className="btn btn-success"
                       onClick={
                         editingProductId
                           ? handleSaveEditProduct
@@ -196,9 +194,9 @@ function AddProduct({ onAddProduct }) {
                 </form>
               </div>
 
-              <div className="col-lg-6 p-4">
+              <div className="col-12 col-lg-6 p-2 p-md-4">
                 <div className="table-responsive">
-                  <table className="table table-bordered">
+                  <table className="table table-bordered table-sm">
                     <thead className="table-dark">
                       <tr>
                         <th className="text-center">Name</th>
@@ -209,11 +207,11 @@ function AddProduct({ onAddProduct }) {
                     <tbody>
                       {firestoreProducts.map((product) => (
                         <tr key={product.id}>
-                          <td>{product.name}</td>
+                          <td className="text-break">{product.name}</td>
                           <td>₹{product.price}</td>
                           <td>
                             <button
-                              className="btn btn-primary mx-2"
+                              className="btn btn-primary btn-sm"
                               onClick={() => handleEditProduct(product.id)}
                             >
                               Edit
