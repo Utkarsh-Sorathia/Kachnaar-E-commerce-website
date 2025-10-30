@@ -49,7 +49,7 @@ const Welcome = () => {
                             className="d-block w-100"
                             alt={`Slide ${index + idx}`}
                             style={{
-                              height: "200px",
+                              height: "30vh",
                               objectFit: "cover",
                               borderRadius: "10px",
                             }}
